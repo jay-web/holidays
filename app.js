@@ -20,7 +20,6 @@ app.get("/api/v1/tours", (req, res) => {
 })
 
 // * GET request of tours collection resource to get single tour info
-
 app.get("/api/v1/tours/:id", (req, res) => {
     let id = req.params.id * 1; // ? to convert string into int
   
@@ -67,7 +66,6 @@ app.post("/api/v1/tours", (req, res) => {
 })
 
 // * PATCH request of tour resource to edit/update any tour info
-
 app.patch("/api/v1/tours/:id", (req, res) => {
     let id = req.params.id * 1; // convert string into int
     let tour = tours.find(el => el.id === id);
@@ -105,12 +103,37 @@ app.patch("/api/v1/tours/:id", (req, res) => {
         })
     })
 
-   
-
-    
 })
 
+// * DELETE request of tour resource to delete any tour as per id
+app.delete("/api/v1/tours/:id", (req, res) => {
+    let id = req.params.id * 1; // convert string into int
+    
+    let tour = tours.find((el) => el.id === id);
 
+    // * if tour not found as per id
+    if(!tour){
+        return res.status(404).json({
+            status: "failed",
+            message : "invalid id"
+        })
+    }
+
+    let tourAfterDelete = tours.filter((el) => {
+        if(el.id !== id){
+            return el;
+        };
+    })
+
+    console.log({tourAfterDelete});
+
+    fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tourAfterDelete), (error, data) => {
+        return res.status(204).json({
+            status: "success",
+            
+        })
+    })
+})
 
 const port = 3000;
 app.listen(port, () => {
