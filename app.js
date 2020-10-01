@@ -66,6 +66,50 @@ app.post("/api/v1/tours", (req, res) => {
 
 })
 
+// * PATCH request of tour resource to edit/update any tour info
+
+app.patch("/api/v1/tours/:id", (req, res) => {
+    let id = req.params.id * 1; // convert string into int
+    let tour = tours.find(el => el.id === id);
+
+    // if tour not found as per id
+    if(!tour){
+        res.status(404).json({
+            status: "failed",
+            message: "Invalid id"
+        })
+    }
+
+    let editTour = {...tour, ...req.body};
+    
+    let editTours = tours.map((el) => {
+        if(el.id === id){
+            el = editTour
+        }
+        return el;
+    })
+
+
+    fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(editTours), (error, data) => {
+        if(error) {
+            return res.status(400).json({
+                status: "failed",
+                message: error.message
+            })
+        }
+        res.status(200).json({
+            status: "success",
+            data: {
+                tour: editTour
+            }
+        })
+    })
+
+   
+
+    
+})
+
 
 
 const port = 3000;
