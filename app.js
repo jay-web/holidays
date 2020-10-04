@@ -13,7 +13,4 @@ app.use(express.json());    // middleware to read req.body
 app.use("/api/v1/users", userRouter);
 app.use('/api/v1/tours', tourRouter);       // mounting routes
 
-const port = 3000;
-app.listen(port, () => {
-    console.log(`Server running at ${port}`);
-})
+module.exports = app;
