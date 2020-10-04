@@ -1,14 +1,16 @@
 const express = require("express");
 const fs = require("fs");
 const app = express();
+const morgan = require("morgan");
 
+
+app.use(morgan('dev'));     // logger middleware for console
 app.use(express.json());    // middleware to read req.body
 
 // fetch tours collection from local db file
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
-// * GET request of tours collection resource
-app.get("/api/v1/tours", (req, res) => {
+const getAllTours = (req, res) => {
     res
         .status(200)
         .json(
@@ -17,10 +19,9 @@ app.get("/api/v1/tours", (req, res) => {
                     tours: tours}
                 }
             )
-})
+}
 
-// * GET request of tours collection resource to get single tour info
-app.get("/api/v1/tours/:id", (req, res) => {
+const getTour = (req, res) => {
     let id = req.params.id * 1; // ? to convert string into int
   
     let tour = tours.find((el) => { 
@@ -43,10 +44,9 @@ app.get("/api/v1/tours/:id", (req, res) => {
             tour: tour
         }
     })
-})
+}
 
-// * POST request to create/add new tour
-app.post("/api/v1/tours", (req, res) => {
+const createTour = (req, res) => {
     let newid = tours.length;
     let newTour = Object.assign({id: newid}, req.body);
 
@@ -63,10 +63,9 @@ app.post("/api/v1/tours", (req, res) => {
             })
     });
 
-})
+}
 
-// * PATCH request of tour resource to edit/update any tour info
-app.patch("/api/v1/tours/:id", (req, res) => {
+const updateTour = (req, res) => {
     let id = req.params.id * 1; // convert string into int
     let tour = tours.find(el => el.id === id);
 
@@ -103,10 +102,9 @@ app.patch("/api/v1/tours/:id", (req, res) => {
         })
     })
 
-})
+}
 
-// * DELETE request of tour resource to delete any tour as per id
-app.delete("/api/v1/tours/:id", (req, res) => {
+const deleteTour = (req, res) => {
     let id = req.params.id * 1; // convert string into int
     
     let tour = tours.find((el) => el.id === id);
@@ -133,7 +131,66 @@ app.delete("/api/v1/tours/:id", (req, res) => {
             
         })
     })
-})
+}
+
+// Users Route handlers
+
+const getAllUsers = (req, res) => {
+    res.status(500).json({
+        status: "error",
+        message: "This route is not created yet"
+    })
+}
+const getUser = (req, res) => {
+    res.status(500).json({
+        status: "error",
+        message: "This route is not created yet"
+    })
+}
+const createUser = (req, res) => {
+    res.status(500).json({
+        status: "error",
+        message: "This route is not created yet"
+    })
+}
+const updateUser = (req, res) => {
+    res.status(500).json({
+        status: "error",
+        message: "This route is not created yet"
+    })
+}
+
+const deleteUser = (req, res) => {
+    res.status(500).json({
+        status: "error",
+        message: "This route is not created yet"
+    })
+}
+
+
+// * GET request of tours collection resource
+app.get("/api/v1/tours", getAllTours);
+
+// * GET request of tours collection resource to get single tour info
+app.get("/api/v1/tours/:id", getTour);
+
+// * POST request to create/add new tour
+app.post("/api/v1/tours", createTour);
+
+// * PATCH request of tour resource to edit/update any tour info
+app.patch("/api/v1/tours/:id", updateTour);
+
+// * DELETE request of tour resource to delete any tour as per id
+app.delete("/api/v1/tours/:id", deleteTour);
+
+
+app.get("/api/v1/users", getAllUsers);
+app.get("/api/v1/users/:id", getUser);
+app.post("/api/v1/users", createUser);
+app.patch("/api/v1/users/:id", updateUser);
+app.delete("/api/v1/users/:id", deleteUser);
+
+
 
 const port = 3000;
 app.listen(port, () => {
