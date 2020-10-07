@@ -6,8 +6,12 @@ const tourRouter = require("./routes/tourRouter");
 const userRouter = require("./routes/userRouter");
 
 // * Applying globally use middleware in app
-app.use(morgan('dev'));     // logger middleware for console
+if(process.env.NODE_ENV === 'development'){
+    app.use(morgan('dev'));     // logger middleware for console
+}
+
 app.use(express.json());    // middleware to read req.body
+app.use(express.static(`${__dirname}/public`));
 
 // * Applying middleware as per requested route
 app.use("/api/v1/users", userRouter);
