@@ -5,6 +5,25 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+// * params middleware
+
+exports.checkId = (req, res, next, val) => {
+  console.log(typeof val);
+  let tour = tours.find((el) => {
+    return el.id === val * 1;  
+  });
+
+  // if search tour not available as per id
+  if (!tour) {
+    return res.status(404).json({
+      status: "failed",
+      message: "Invalid id",
+    });
+  }
+
+  next();
+}
+
 // Tours Route handlers/controllers
 exports.getAllTours = (req, res) => {
   res.status(200).json({
@@ -17,21 +36,11 @@ exports.getAllTours = (req, res) => {
 
 exports.getTour = (req, res) => {
   let id = req.params.id * 1; // ? to convert string into int
-
+  // * Below code will run if params middleware get passed
   let tour = tours.find((el) => {
     return el.id === id;
   });
-
-  // if search tour not available as per id
-  if (!tour) {
-    return res.status(404).json({
-      status: "failed",
-      message: "Invalid id",
-    });
-  }
-
   // if we found the tour as per id
-
   res.status(200).json({
     status: "success",
     data: {
@@ -62,15 +71,10 @@ exports.createTour = (req, res) => {
 
 exports.updateTour = (req, res) => {
   let id = req.params.id * 1; // convert string into int
-  let tour = tours.find((el) => el.id === id);
 
-  // if tour not found as per id
-  if (!tour) {
-    res.status(404).json({
-      status: "failed",
-      message: "Invalid id",
-    });
-  }
+  let tour = tours.find((el) => {
+    return el.id === id * 1;  
+  });
 
   let editTour = { ...tour, ...req.body };
 
@@ -82,7 +86,7 @@ exports.updateTour = (req, res) => {
   });
 
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(editTours),
     (error, data) => {
       if (error) {
@@ -103,27 +107,16 @@ exports.updateTour = (req, res) => {
 
 exports.deleteTour = (req, res) => {
   let id = req.params.id * 1; // convert string into int
-
-  let tour = tours.find((el) => el.id === id);
-
-  // * if tour not found as per id
-  if (!tour) {
-    return res.status(404).json({
-      status: "failed",
-      message: "invalid id",
-    });
-  }
-
+  // * Below code will run if params middleware get passed
   let tourAfterDelete = tours.filter((el) => {
     if (el.id !== id) {
       return el;
     }
   });
 
-  console.log({ tourAfterDelete });
 
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    `${__dirname}/../dev-data/data/tours-simple.json`,
     JSON.stringify(tourAfterDelete),
     (error, data) => {
       return res.status(204).json({

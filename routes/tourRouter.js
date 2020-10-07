@@ -4,8 +4,13 @@ const {
     getTour, 
     createTour,
     updateTour, 
-    deleteTour } = require("./../controllers/tourController");
+    deleteTour,
+    checkId
+ } = require("./../controllers/tourController");
+
 const tourRouter = express.Router();
+
+tourRouter.param("id", checkId);
 
 // * GET request of tours collection resource
 tourRouter.get("/", getAllTours);
