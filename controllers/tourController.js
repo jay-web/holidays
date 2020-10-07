@@ -5,7 +5,7 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
-// * params middleware
+// * params middleware to check valid passed id
 
 exports.checkId = (req, res, next, val) => {
   console.log(typeof val);
@@ -21,6 +21,18 @@ exports.checkId = (req, res, next, val) => {
     });
   }
 
+  next();
+}
+
+// * custom middleware to check req.body
+exports.checkBody = (req, res, next) => {
+  console.log(req.body);
+  if(!req.body.name){
+    return res.status(400).json({
+      status: "failed",
+      message: "name is mandatory in new tour"
+    })
+  }
   next();
 }
 
