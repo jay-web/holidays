@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require('dotenv');
 dotenv.config({ path: "./config.env"});     // * to fetch config items from file
+const app = require("./app");       // app from app.js running express
 
 // * It is just to replace database password dynamically
 const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
@@ -12,8 +13,6 @@ mongoose.connect(DB, {
     useCreateIndex: true,
     useFindAndModify: false
 }).then((cons) => console.log(cons.connection));
-
-const app = require("./app");       // app from app.js running express
 
 
 const port = process.env.PORT ;

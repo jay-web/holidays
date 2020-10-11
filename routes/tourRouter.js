@@ -5,13 +5,12 @@ const {
     createTour,
     updateTour, 
     deleteTour,
-    checkId,
-    checkBody
+    
  } = require("./../controllers/tourController");
 
 const tourRouter = express.Router();
 
-tourRouter.param("id", checkId);
+// tourRouter.param("id", checkId);
 
 // * GET request of tours collection resource
 tourRouter.get("/", getAllTours);
@@ -20,7 +19,7 @@ tourRouter.get("/", getAllTours);
 tourRouter.get("/:id", getTour);
 
 // * POST request to create/add new tour
-tourRouter.post("/", checkBody, createTour);
+tourRouter.post("/", createTour);
 
 // * PATCH request of tour resource to edit/update any tour info
 tourRouter.patch("/:id", updateTour);
