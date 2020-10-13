@@ -37,19 +37,41 @@ const Tour = require("./../models/tourModel");
 // }
 
 // Tours Route handlers/controllers
-exports.getAllTours = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    // data: {
-    //   tours: tours,
-    // },
-  });
+exports.getAllTours = async (req, res) => {
+
+  try {
+    const tours = await Tour.find();
+    res.status(200).json({
+      status: "success",
+      data: {
+        tours: tours,
+      },
+    });
+  }catch(error) {
+    res.status(400).json({
+      status: "failed",
+      message: error.message
+    })
+  }
+ 
 };
 
-exports.getTour = (req, res) => {
-  let id = req.params.id * 1; // ? to convert string into int
+exports.getTour = async  (req, res) => {
+  try{
+    const tour = await Tour.findById(req.params.id);
 
-
+    res.status(200).json({
+      status: "success",
+      data: {
+        tour: tour
+      }
+    })
+  }catch(error){
+    res.status(400).json({
+      status: "failed",
+      message: error.message
+    })
+  }
 };
 
 exports.createTour = async (req, res) => {
