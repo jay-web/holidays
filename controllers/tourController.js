@@ -97,8 +97,25 @@ exports.createTour = async (req, res) => {
 
 };
 
-exports.updateTour = (req, res) => {
-  let id = req.params.id * 1; // convert string into int
+exports.updateTour = async (req, res) => {
+  try{
+    const tour =  await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+
+    res.status(200).json({
+      status: "success",
+      data : {
+        tour: tour
+      }
+    })
+  }catch(error){
+    res.status(400).json({
+      status: "failed",
+      message: error.message
+    })
+  }
 
  
 };
