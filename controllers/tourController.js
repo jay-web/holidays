@@ -4,6 +4,7 @@
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 // );
 
+const { json } = require("express");
 const Tour = require("./../models/tourModel");
 
 // * params middleware to check valid passed id
@@ -43,7 +44,13 @@ exports.getAllTours = async (req, res) => {
     const queryObject = { ...req.query };
     const excludeFields = ["page", "sort", "limit", "fields"];
     excludeFields.forEach((el) => delete queryObject[el]);
-    const query = Tour.find(queryObject);
+
+    // * Advanced filtering like lt, lte, gt,gte
+    let queryString = JSON.stringify(queryObject);
+
+    queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+
+    const query = Tour.find(JSON.parse(queryString));
 
     // * Execute the query
     const tours = await query;
