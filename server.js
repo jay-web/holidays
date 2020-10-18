@@ -12,7 +12,10 @@ mongoose.connect(DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false
-}).then((cons) => console.log(cons.connection));
+}).then((cons) => {
+    // console.log(cons.connection)}
+    console.log("Database connected !!")
+});
 
 
 const port = process.env.PORT ;
