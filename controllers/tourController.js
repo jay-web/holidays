@@ -40,19 +40,19 @@ const Tour = require("./../models/tourModel");
 // Tours Route handlers/controllers
 exports.getAllTours = async (req, res) => {
   try {
-    // * Build filter query
+    // * Build filter query   - STEP ONE
     const queryObject = { ...req.query };
     const excludeFields = ["page", "sort", "limit", "fields"];
     excludeFields.forEach((el) => delete queryObject[el]);
 
-    // * Advanced filtering like lt, lte, gt, gte
+    // * Advanced filtering like lt, lte, gt, gte  - STEP TWO
     let queryString = JSON.stringify(queryObject);
     queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
 
    
     let query = Tour.find(JSON.parse(queryString));
 
-    // * Sorting
+    // * Sorting      -- STEP THREE
     if(req.query.sort){
       const sortBy = req.query.sort.split(",").join(" ");
       query = query.sort(sortBy);
@@ -60,13 +60,26 @@ exports.getAllTours = async (req, res) => {
       query = query.sort("-createdAt");
     }
 
-    // * Fields Limitation
+    // * Fields Limitation      -- STEP FOUR
     if(req.query.fields){
       const limitFields = req.query.fields.split(",").join(" ");
       query = query.select(limitFields);
     }else{
       query = query.select("-__v"); // exclude this property
     }
+
+    // * Pagination     -- STEP FIVE
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip =(page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    if(req.query.page ){
+      const numTours = await Tour.countDocuments();
+      if(skip >= numTours) throw new Error("This page doesn't exit");
+    }
+
 
     // * Execute the query
     const tours = await query;
