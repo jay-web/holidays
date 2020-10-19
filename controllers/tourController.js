@@ -37,6 +37,8 @@ const Tour = require("./../models/tourModel");
 //   next();
 // }
 
+
+
 // Tours Route handlers/controllers
 exports.getAllTours = async (req, res) => {
   try {
@@ -171,3 +173,15 @@ exports.deleteTour = async (req, res) => {
     });
   }
 };
+
+
+
+// * Top five cheap tour filter middleware
+exports.aliesTopFive = (req, res, next) => {
+  req.query.limit = "5";
+  req.query.sort = "-ratingsAverage,price";
+  req.query.fields = "name,duration,ratingsAverage,difficulty,summary,price";
+
+  next();
+
+}

@@ -2,6 +2,7 @@ const express = require("express");
 const { 
     getAllTours, 
     getTour, 
+    aliesTopFive,
     createTour,
     updateTour, 
     deleteTour,
@@ -12,11 +13,16 @@ const tourRouter = express.Router();
 
 // tourRouter.param("id", checkId);
 
+
+// * GET request of top five cheap tours from tours collection
+tourRouter.get("/top-5-cheap", aliesTopFive, getAllTours);
+
 // * GET request of tours collection resource
 tourRouter.get("/", getAllTours);
 
 // * GET request of tours collection resource to get single tour info
 tourRouter.get("/:id", getTour);
+
 
 // * POST request to create/add new tour
 tourRouter.post("/", createTour);
