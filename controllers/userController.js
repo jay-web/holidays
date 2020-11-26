@@ -1,9 +1,22 @@
 // Users Route handlers/controllers
-exports.getAllUsers = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not created yet",
-  });
+const User = require("../models/userModel");
+exports.getAllUsers = async (req, res) => {
+  try{
+    const allUsers = await User.find();
+
+    res.status(201).json({
+        status: "success",
+        totalUsers: allUsers.length,
+        data: {
+            users: allUsers
+        }
+    })
+}catch(error){
+    res.status(400).json({
+        status: "failed",
+        message: error.message
+    })
+}
 };
 exports.getUser = (req, res) => {
   res.status(500).json({

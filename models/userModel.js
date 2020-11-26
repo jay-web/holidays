@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -12,7 +13,7 @@ const userSchema = new mongoose.Schema({
         required: [true, "Please mention email id"],
         unique: true,
         lowercase: true,
-        // validate: [validator.email, 'Please provide a valid email']
+        validate: [validator.isEmail, 'Please provide a valid email']
 
     },
     photo: [String],
@@ -23,9 +24,27 @@ const userSchema = new mongoose.Schema({
     },
     passwordConfirm: {
         type: String,
-        required: [true, "Please enter password again to confirm"]
+        required: [true, "Please enter password again to confirm"],
+        validate: {
+            validator: function(el) {
+                return el === this.password
+            },
+            message: "Password are not same !!!"
+
+        }
     }
 });
+
+// Middleware to encrypt the user password, before store in db
+userSchema.pre('save', async function(next) {
+    if(!this.isModified('password')) return next();
+
+    this.password = await bcrypt.hash(this.password, 12);
+
+    this.passwordConfirm = undefined;       // just to remove passwordConfirm from database
+
+    next();
+})
 
 const User = mongoose.model("User", userSchema);
 
