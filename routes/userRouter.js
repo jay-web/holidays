@@ -11,6 +11,7 @@ const authController = require("./../controllers/authController");
 const userRouter = express.Router();
 
 userRouter.post("/signup", authController.signUp);
+userRouter.post("/login", authController.login);
 
 userRouter.get("/", getAllUsers);
 userRouter.get("/:id", getUser);
