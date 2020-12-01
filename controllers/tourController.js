@@ -4,118 +4,83 @@
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 // );
 
-const { json } = require("express");
+
 const Tour = require("./../models/tourModel");
 const APIFeatures = require("./../utils/apiFeatures");
+const catchAsync = require("./../utils/catchAsync");
 
 // * params middleware to check valid passed id
 
-
 // Tours Route handlers/controllers
-exports.getAllTours = async (req, res) => {
-  try {
-    // * Execute the query
-    const features = new APIFeatures(Tour.find(), req.query)
-      .filter()
-      .sort()
-      .limitFields()
-      .pagination();
+exports.getAllTours = catchAsync(async (req, res) => {
+  // * Execute the query
+  const features = new APIFeatures(Tour.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .pagination();
 
-    const tours = await features.query;
-    res.status(200).json({
-      status: "success",
-      result: tours.length,
-      data: {
-        tours: tours,
-      },
-    });
-  } catch (error) {
-    res.status(400).json({
-      status: "failed",
-      message: error.message,
-    });
-  }
-};
+  const tours = await features.query;
+  res.status(200).json({
+    status: "success",
+    result: tours.length,
+    data: {
+      tours: tours,
+    },
+  });
+});
 
-exports.getTour = async (req, res) => {
-  try {
-    const tour = await Tour.findById(req.params.id);
+exports.getTour = catchAsync(async (req, res) => {
+  const tour = await Tour.findById(req.params.id);
 
-    res.status(200).json({
-      status: "success",
-      data: {
-        tour: tour,
-      },
-    });
-  } catch (error) {
-    res.status(400).json({
-      status: "failed",
-      message: error.message,
-    });
-  }
-};
+  res.status(200).json({
+    status: "success",
+    data: {
+      tour: tour,
+    },
+  });
+});
 
-exports.createTour = async (req, res) => {
-  try {
-    // const newTour = new Tour({});
-    // newTour.save()
+exports.createTour = catchAsync(async (req, res) => {
+  // const newTour = new Tour({});
+  // newTour.save()
 
-    const newTour = await Tour.create(req.body);
-    res.status(201).json({
-      status: "success",
-      data: {
-        tour: newTour,
-      },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "failed",
-      message: err.message,
-    });
-  }
-};
+  const newTour = await Tour.create(req.body);
+  res.status(201).json({
+    status: "success",
+    data: {
+      tour: newTour,
+    },
+  });
+});
 
-exports.updateTour = async (req, res) => {
-  try {
-    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+exports.updateTour = catchAsync(async (req, res) => {
+  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
-    res.status(200).json({
-      status: "success",
-      data: {
-        tour: tour,
-      },
-    });
-  } catch (error) {
-    res.status(404).json({
-      status: "failed",
-      message: error.message,
-    });
-  }
-};
+  res.status(200).json({
+    status: "success",
+    data: {
+      tour: tour,
+    },
+  });
+});
 
-exports.deleteTour = async (req, res) => {
-  try {
-    await Tour.findByIdAndDelete(req.params.id);
-    res.status(204).json({
-      status: "success",
-      data: null,
-    });
-  } catch (error) {
-    res.status(404).json({
-      status: "failed",
-      message: error.message,
-    });
-  }
-};
+exports.deleteTour = catchAsync(async (req, res) => {
+  await Tour.findByIdAndDelete(req.params.id);
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});
 
 // * Top five cheap tour filter middleware
-exports.aliesTopFive = (req, res, next) => {
+exports.aliesTopFive = catchAsync((req, res, next) => {
   req.query.limit = "5";
   req.query.sort = "-ratingsAverage,price";
   req.query.fields = "name,duration,ratingsAverage,difficulty,summary,price";
 
   next();
-};
+});
