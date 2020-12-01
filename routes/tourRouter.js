@@ -8,6 +8,7 @@ const {
     deleteTour,
     
  } = require("./../controllers/tourController");
+ const {protect } = require("../controllers/authController");
 
 const tourRouter = express.Router();
 
@@ -18,7 +19,7 @@ const tourRouter = express.Router();
 tourRouter.get("/top-5-cheap", aliesTopFive, getAllTours);
 
 // * GET request of tours collection resource
-tourRouter.get("/", getAllTours);
+tourRouter.get("/", protect, getAllTours);
 
 // * GET request of tours collection resource to get single tour info
 tourRouter.get("/:id", getTour);

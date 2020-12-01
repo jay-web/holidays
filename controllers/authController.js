@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const {promisify } = require("util");
 const jwt = require("jsonwebtoken");
 
 const createToken = (userId) => {
@@ -68,3 +69,24 @@ exports.login = async (req, res) => {
     })
 }
 
+exports.protect = async (req, res, next) => {
+    // let token ;
+    // // Step 1 = Check whether token available in header or not
+    // if(req.headers && req.headers.authorization){
+    //     token = req.headers.authorization.split(" ")[1];
+    // }
+
+    // if(!token ){
+    //     return res.status(401).json({
+    //         status: "failed",
+    //         message: "You are not logged In. Please login !!!"
+    //     })
+    // }
+
+    // // Step 2 = Verify token
+    // const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    
+    next();
+
+
+}
