@@ -6,7 +6,8 @@ const tourSchema = mongoose.Schema({
         type: String,
         required: [true, "A tour must have a name"],
         unique: true,
-        trim: true
+        trim: true,
+        minLength: 5
     },
     duration: {
         type: Number,
@@ -23,6 +24,7 @@ const tourSchema = mongoose.Schema({
     ratingsAverage: {
         type: Number,
         default: 4.5,
+        max: 5
 
     },
     ratingsQuantity: {
