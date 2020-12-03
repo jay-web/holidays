@@ -3,6 +3,12 @@ const dotenv = require('dotenv');
 dotenv.config({ path: "./config.env"});     // * to fetch config items from file
 const app = require("./app");       // app from app.js running express
 
+// Sync rejection error handled for entire application
+process.on("uncaughtException", (err) => {
+    console.log(err.name, err.message);
+    process.exit(1);
+})
+
 // * It is just to replace database password dynamically
 const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
 
@@ -20,6 +26,15 @@ mongoose.connect(DB, {
 
 
 const port = process.env.PORT ;
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server running at ${port}`);
-})
+});
+
+// unhandled promise rejection (async handled rejection error in entire application)
+process.on("unhandledRejection", (err) => {
+    console.log("Error" , err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    })
+});
+
