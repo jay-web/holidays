@@ -21,6 +21,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
+    role: req.body.role
   });
 
   const token = createToken(newUser._id);
@@ -94,6 +95,22 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // Finally if above steps are fine, so will grant the access
-  req.user = currentUser;
+  req.user = currentUser;   // !  Very important passing the 
+                            // ! user to the request to get used in later middleware
+
   next();
 });
+
+// Middlware to restrict the authorization
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if(!roles.includes(req.user.role)){
+      return next(
+        new AppError("You don't have permission to run this action !!!", 403)
+      ) 
+    }
+
+    return next();
+  }
+}

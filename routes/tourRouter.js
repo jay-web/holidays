@@ -8,7 +8,7 @@ const {
     deleteTour,
     
  } = require("./../controllers/tourController");
- const {protect } = require("../controllers/authController");
+ const {protect, restrictTo } = require("../controllers/authController");
 
 const tourRouter = express.Router();
 
@@ -32,7 +32,7 @@ tourRouter.post("/", createTour);
 tourRouter.patch("/:id", updateTour);
 
 // * DELETE request of tour resource to delete any tour as per id
-tourRouter.delete("/:id", deleteTour);
+tourRouter.delete("/:id", protect, restrictTo("admin", "lead-guide"), deleteTour);
 
 // * Finally export tourRouter to app.js file to use as middleware
 // * in main app
