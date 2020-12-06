@@ -102,7 +102,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 // Middlware to restrict the authorization
-
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     if(!roles.includes(req.user.role)){
@@ -113,4 +112,30 @@ exports.restrictTo = (...roles) => {
 
     return next();
   }
-}
+};
+
+
+// Middleware to handle forget password request
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  // Get user based on email passed by user
+  const user = await User.findOne({ email : req.body.email});
+
+  if(!user){
+    return next(
+      new AppError("Email is not valid or registered with us !!!", 404)
+    )
+  }
+
+  // Generate the random reset token
+
+  const resetToken = user.createResetPasswordToken();
+  await user.save({ validateBeforeSave: false});
+  
+});
+
+// Middleware to handlw resetPassword request
+
+exports.resetPassword = (req, res, next) => {}
+
+
