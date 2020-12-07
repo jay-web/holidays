@@ -14,6 +14,7 @@ const AppError = require("./../utils/appError");
 
 // Tours Route handlers/controllers
 exports.getAllTours = catchAsync(async (req, res, next) => {
+  console.log({req})
   // * Execute the query
   const features = new APIFeatures(Tour.find(), req.query)
     .filter()

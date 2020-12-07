@@ -176,13 +176,49 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   // 3 Update changepasswordAt property for the user
   // ! Step 3 occur in user model
-  
+
   // 4 log in user, send jwt
   const token = createToken(user._id);
   res.status(200).json({
     status: "success",
     token: token,
   });
+
+
+});
+
+
+// Middleware to handle update password request if user already login
+
+exports.updatePassword = catchAsync(async function(req, res, next) {
+    
+    // Get the user from collection
+    const user = await User.findById(req.user.id).select("+password");
+    console.log({user});
+    if(!user){
+      return next( new AppError("You are not logged in !!!. Please login", 401))
+    }
+
+    // Check the passed old password is correct or not
+    const correct = await user.correctPassword(req.body.oldPassword, user.password);
+
+    if(!correct){
+      return next(new AppError("Old password is not correct, please try again", 403));
+    }
+
+    // If so, update the password
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    await user.save();
+
+
+    // Finally logged in user again, send jwt
+    const token = createToken(user._id);
+    res.status(200).json({
+      status: "success",
+      token: token,
+    });
+
 
 
 });
