@@ -3,6 +3,7 @@ const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const sendEmail = require("../utils/email");
 
 const createToken = (userId) => {
   return jwt.sign(
@@ -21,7 +22,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
-    role: req.body.role
+    role: req.body.role,
   });
 
   const token = createToken(newUser._id);
@@ -95,8 +96,8 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // Finally if above steps are fine, so will grant the access
-  req.user = currentUser;   // !  Very important passing the 
-                            // ! user to the request to get used in later middleware
+  req.user = currentUser; // !  Very important passing the
+  // ! user to the request to get used in later middleware
 
   next();
 });
@@ -104,38 +105,61 @@ exports.protect = catchAsync(async (req, res, next) => {
 // Middlware to restrict the authorization
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
-    if(!roles.includes(req.user.role)){
+    if (!roles.includes(req.user.role)) {
       return next(
         new AppError("You don't have permission to run this action !!!", 403)
-      ) 
+      );
     }
 
     return next();
-  }
+  };
 };
-
 
 // Middleware to handle forget password request
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // Get user based on email passed by user
-  const user = await User.findOne({ email : req.body.email});
+  const user = await User.findOne({ email: req.body.email });
 
-  if(!user){
+  if (!user) {
     return next(
       new AppError("Email is not valid or registered with us !!!", 404)
-    )
+    );
   }
 
   // Generate the random reset token
-
   const resetToken = user.createResetPasswordToken();
-  await user.save({ validateBeforeSave: false});
-  
+  await user.save({ validateBeforeSave: false });
+
+  const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+
+  // Send the email
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Your password reset token (valid for 10 min)",
+      message: `To reset please click on link ${resetURL}`,
+    });
+
+    res.status(201).json({
+      status: "success",
+      message: "Email send successfully",
+    });
+  } catch (error) {
+    user.passwordResetToken = undefined;
+    user.passwordResetTokenExpires = undefined;
+    await user.save({ validateBeforeSave: false});
+
+    return next(new AppError("Something went wrong", 500));
+  }
 });
 
 // Middleware to handlw resetPassword request
 
-exports.resetPassword = (req, res, next) => {}
+exports.resetPassword = (req, res, next) => {
 
-
+  // res.send(200).json({
+  //   status: "success",
+  //   message: req.params.token
+  // })
+};
