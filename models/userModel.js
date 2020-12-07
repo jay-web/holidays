@@ -16,10 +16,10 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, "Please provide a valid email"],
   },
-  role:{
+  role: {
     type: String,
     enum: ["user", "guide", "lead-guide", "admin"],
-    default: "user"
+    default: "user",
   },
   photo: [String],
   password: {
@@ -42,12 +42,12 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: {
     type: Date,
   },
-  passwordResetToken : {
-    type: String
+  passwordResetToken: {
+    type: String,
   },
-  passwordResetTokenExpires : {
-    type: Date
-  }
+  passwordResetTokenExpires: {
+    type: Date,
+  },
 });
 
 // Middleware to encrypt the user password, before store in db
@@ -58,6 +58,15 @@ userSchema.pre("save", async function (next) {
 
   this.passwordConfirm = undefined; // just to remove passwordConfirm from database
 
+  next();
+});
+
+// Middleware to set passwordChangedAt property after password changed
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password") || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
@@ -86,16 +95,17 @@ userSchema.methods.checkPasswordChanged = async function (JWTTimestamp) {
 
 // * To create reset password token
 userSchema.methods.createResetPasswordToken = function () {
-  const resetToken = crypto.randomBytes(32).toString('hex');
-  console.log({resetToken});
-  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-  console.log("this.passwordResetToken", this.passwordResetToken);
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
 
   this.passwordResetTokenExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
-  
-}
+};
 
 const User = mongoose.model("User", userSchema);
 
