@@ -90,3 +90,16 @@ exports.updateMe = catchAsync(async (req, res, next) => {
       }
     })
 });
+
+ // Middleware to deactive user acccount or delete the user
+ // It will only set user deactive, won't delete data from database
+
+ exports.deleteMe = catchAsync(async (req, res, next) => {
+    await User.findByIdAndUpdate(req.user.id, {active : false});
+
+
+    res.status(204).json({
+      status: "success",
+      data: null
+    })
+ });
