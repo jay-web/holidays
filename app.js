@@ -1,11 +1,15 @@
 const express = require("express");
-
 const app = express();
 const morgan = require("morgan");
+
+// ! Security packages 
 const rateLimiter = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
+const hpp = require("hpp");
+// ! ===================
+
 
 const globalErrorHandler = require("./controllers/errorController");
 const AppError = require("./utils/appError");
@@ -37,6 +41,9 @@ app.use(mongoSanitize());
 
 // middleware to protect from XSS 
 app.use(xss());
+
+// middleware to protect from http parameter pollution
+app.use(hpp());
 
 app.use(express.static(`${__dirname}/public`));
 
