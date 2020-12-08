@@ -4,6 +4,8 @@ const app = express();
 const morgan = require("morgan");
 const rateLimiter = require("express-rate-limit");
 const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
 
 const globalErrorHandler = require("./controllers/errorController");
 const AppError = require("./utils/appError");
@@ -15,10 +17,11 @@ if(process.env.NODE_ENV === 'development'){
      // logger middleware for console
     app.use(morgan('dev'));    
 }
-    // Set security http header
-    app.use(helmet());
+// Set security http header
+app.use(helmet());
 
-    // Rate limiter middleware to set request limit from any IP
+
+// Rate limiter middleware to set request limit from any IP
 const limiter = rateLimiter({
     max: 3,
     windowMs: 60 * 60 * 1000,
@@ -26,8 +29,15 @@ const limiter = rateLimiter({
 })
 app.use("/api", limiter);
 
-    // middleware to read req.body
-app.use(express.json());    
+// middleware to read req.body
+app.use(express.json({ limit:  '10kb'}));    
+
+// middleware to protect from NoSQL query injection ( Data Sanitization)
+app.use(mongoSanitize());
+
+// middleware to protect from XSS 
+app.use(xss());
+
 app.use(express.static(`${__dirname}/public`));
 
 // * Applying middleware as per requested route
