@@ -2,6 +2,8 @@ const express = require("express");
 
 const app = express();
 const morgan = require("morgan");
+const rateLimiter = require("express-rate-limit");
+const helmet = require("helmet");
 
 const globalErrorHandler = require("./controllers/errorController");
 const AppError = require("./utils/appError");
@@ -10,10 +12,22 @@ const userRouter = require("./routes/userRouter");
 
 // * Applying globally use middleware in app
 if(process.env.NODE_ENV === 'development'){
-    app.use(morgan('dev'));     // logger middleware for console
+     // logger middleware for console
+    app.use(morgan('dev'));    
 }
+    // Set security http header
+    app.use(helmet());
 
-app.use(express.json());    // middleware to read req.body
+    // Rate limiter middleware to set request limit from any IP
+const limiter = rateLimiter({
+    max: 3,
+    windowMs: 60 * 60 * 1000,
+    message: "Too many request from this IP, please try again after in an hour"
+})
+app.use("/api", limiter);
+
+    // middleware to read req.body
+app.use(express.json());    
 app.use(express.static(`${__dirname}/public`));
 
 // * Applying middleware as per requested route
