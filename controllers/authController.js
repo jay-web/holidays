@@ -14,6 +14,32 @@ const createToken = (userId) => {
   );
 };
 
+const sendToken = (user, res, statusCode) => {
+  const token = createToken(user.id);
+
+  // To prevent CROSS SITE SCRIPTING XSS ATTACKS, 
+  // Storing jwt in httpOnly cookies
+
+  const cookieOptions = {
+    expires : new Date( Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000),
+    httpOnly: true
+  }
+
+  if(process.env.NODE_ENV === "production"){
+    cookieOptions.secure = true
+  }
+
+  res.cookie('jwt', token, cookieOptions);
+
+  res.status(statusCode).json({
+    status: "success",
+    token,
+    data: {
+      user: user,
+    },
+  });
+}
+
 // Middleware for sign up
 exports.signUp = catchAsync(async (req, res, next) => {
   // const newUser = await User.create(req.body);
@@ -26,15 +52,8 @@ exports.signUp = catchAsync(async (req, res, next) => {
     role: req.body.role,
   });
 
-  const token = createToken(newUser._id);
+  sendToken(newUser, res, 201);
 
-  res.status(201).json({
-    status: "success",
-    token,
-    data: {
-      user: newUser,
-    },
-  });
 });
 
 // Middleware for login user
@@ -55,11 +74,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // finally send the response with token, if email or password is correct
-  const token = createToken(user._id);
-  res.status(200).json({
-    status: "success",
-    token: token,
-  });
+  sendToken(user, res, 200);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -178,11 +193,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // ! Step 3 occur in user model
 
   // 4 log in user, send jwt
-  const token = createToken(user._id);
-  res.status(200).json({
-    status: "success",
-    token: token,
-  });
+    sendToken(user, res, 200);
 
 
 });
@@ -213,11 +224,7 @@ exports.updatePassword = catchAsync(async function(req, res, next) {
 
 
     // Finally logged in user again, send jwt
-    const token = createToken(user._id);
-    res.status(200).json({
-      status: "success",
-      token: token,
-    });
+    sendToken(user, res, 200);
 
 
 
