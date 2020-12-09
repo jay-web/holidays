@@ -17,7 +17,7 @@ mongoose.connect(DB, {
 
 // Fetch the data from json file
 
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, "utf-8"));
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, "utf-8"));
 
 // EXPORT DATA INTO MONGOOSE DATABASE
 

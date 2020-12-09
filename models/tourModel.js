@@ -19,6 +19,7 @@ const tourSchema = mongoose.Schema({
     },
     difficulty: {
         type: String,
+        enum: ["easy", "medium", "difficulty"],
         required: [true, "A tour must have a difficulty"],
     },
     ratingsAverage: {
@@ -54,7 +55,32 @@ const tourSchema = mongoose.Schema({
         type: Date,
         default: Date.now()
     },
-    startDates: [Date]
+    startDates: [Date],
+    startLocation: {
+        // GeoJson
+        type: {
+            type: String,
+            default: "Point",
+            enum: ["Point"]
+        },
+        coordinates: [Number],
+        address: String,
+        description: String
+
+    },
+    locations: [
+        {
+            type: {
+                type: String,
+                default: "Point",
+                enum: ["Point"]
+            },
+            coordinates: [Number],
+            address: String,
+            description: String,
+            day: Number
+        }
+    ]
 });
 
 // * Create tour model from schema
