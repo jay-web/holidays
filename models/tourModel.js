@@ -80,8 +80,28 @@ const tourSchema = mongoose.Schema({
             description: String,
             day: Number
         }
+    ],
+    guides: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: "User"
+        }
     ]
 });
+
+// DOCUMENT MIDDLEWARE: run before .save() or .create()
+tourSchema.pre("save", function (next){
+    next();
+})
+
+// Query Middlware : it will run on mentioned query (like find query)
+tourSchema.pre(/^find/, function(next) {
+    // populate will take out data from other document as per the reference
+    this.populate({ path: "guides", select: "-__v"})
+    next();
+})
+
+
 
 // * Create tour model from schema
 const Tour = mongoose.model("Tour", tourSchema);
