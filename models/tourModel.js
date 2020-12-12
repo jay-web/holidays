@@ -87,7 +87,10 @@ const tourSchema = mongoose.Schema({
             ref: "User"
         }
     ]
-});
+},  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  });
 
 // DOCUMENT MIDDLEWARE: run before .save() or .create()
 tourSchema.pre("save", function (next){

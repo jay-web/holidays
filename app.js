@@ -15,6 +15,8 @@ const globalErrorHandler = require("./controllers/errorController");
 const AppError = require("./utils/appError");
 const tourRouter = require("./routes/tourRouter");
 const userRouter = require("./routes/userRouter");
+const reviewRouter = require("./routes/reviewRouter");
+
 
 // * Applying globally use middleware in app
 if(process.env.NODE_ENV === 'development'){
@@ -27,7 +29,7 @@ app.use(helmet());
 
 // Rate limiter middleware to set request limit from any IP
 const limiter = rateLimiter({
-    max: 3,
+    max: 50,
     windowMs: 60 * 60 * 1000,
     message: "Too many request from this IP, please try again after in an hour"
 })
@@ -50,6 +52,7 @@ app.use(express.static(`${__dirname}/public`));
 // * Applying middleware as per requested route
 app.use("/api/v1/users", userRouter);
 app.use('/api/v1/tours', tourRouter);       // mounting routes
+app.use('/api/v1/review', reviewRouter);
 
 // * Middleware to handle undefined routes
 app.all("*", (req, res, next) => {

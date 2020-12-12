@@ -3,57 +3,63 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Please tell us your name"],
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: [true, "Please mention email id"],
-    unique: true,
-    lowercase: true,
-    validate: [validator.isEmail, "Please provide a valid email"],
-  },
-  role: {
-    type: String,
-    enum: ["user", "guide", "lead-guide", "admin"],
-    default: "user",
-  },
-  photo: [String],
-  password: {
-    type: String,
-    required: [true, "Password is mandatory"],
-    minlength: 8,
-    select: false,
-  },
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Please tell us your name"],
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: [true, "Please mention email id"],
+      unique: true,
+      lowercase: true,
+      validate: [validator.isEmail, "Please provide a valid email"],
+    },
+    role: {
+      type: String,
+      enum: ["user", "guide", "lead-guide", "admin"],
+      default: "user",
+    },
+    photo: [String],
+    password: {
+      type: String,
+      required: [true, "Password is mandatory"],
+      minlength: 8,
+      select: false,
+    },
 
-  passwordConfirm: {
-    type: String,
-    required: [true, "Please enter password again to confirm"],
-    validate: {
-      validator: function (el) {
-        return el === this.password;
+    passwordConfirm: {
+      type: String,
+      required: [true, "Please enter password again to confirm"],
+      validate: {
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: "Password are not same !!!",
       },
-      message: "Password are not same !!!",
+    },
+    passwordChangedAt: {
+      type: Date,
+    },
+    passwordResetToken: {
+      type: String,
+    },
+    passwordResetTokenExpires: {
+      type: Date,
+    },
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
     },
   },
-  passwordChangedAt: {
-    type: Date,
-  },
-  passwordResetToken: {
-    type: String,
-  },
-  passwordResetTokenExpires: {
-    type: Date,
-  },
-  active: {
-    type: Boolean,
-    default: true,
-    select: false
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
-});
+);
 
 // Middleware to encrypt the user password, before store in db
 userSchema.pre("save", async function (next) {
@@ -77,9 +83,9 @@ userSchema.pre("save", async function (next) {
 
 // Query middleware which implement on mentioned query
 
-userSchema.pre(/^find/, function(next) {
+userSchema.pre(/^find/, function (next) {
   // this point to the current query
-  this.find({active : {$ne: false}})
+  this.find({ active: { $ne: false } });
 
   next();
 });
