@@ -97,6 +97,15 @@ tourSchema.pre("save", function (next){
     next();
 })
 
+
+// Virtual Populate
+tourSchema.virtual("reviews", {
+    ref: "Review",
+    foreignField: "tour",
+    localField: "_id",
+   
+})
+
 // Query Middlware : it will run on mentioned query (like find query)
 tourSchema.pre(/^find/, function(next) {
     // populate will take out data from other document as per the reference

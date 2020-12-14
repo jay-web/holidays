@@ -5,7 +5,7 @@ const reviewController = {
 
     // middleware to get all reviews
     getAllReview : catchAsync(async (req, res, next) => {
-        console.log({req});
+        
         const allReview = await Review.find();
 
         res.status(200).json({
@@ -23,7 +23,7 @@ const reviewController = {
             rating: req.body.rating,
             createdAt: req.body.createdAt,
             tour: req.body.tour,
-            user: req.body.user
+            user: req.user.id
         }
 
         const newReview = await Review.create(review);

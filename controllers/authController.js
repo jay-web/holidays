@@ -205,7 +205,7 @@ exports.updatePassword = catchAsync(async function(req, res, next) {
     
     // Get the user from collection
     const user = await User.findById(req.user.id).select("+password");
-    console.log({user});
+    
     if(!user){
       return next( new AppError("You are not logged in !!!. Please login", 401))
     }
