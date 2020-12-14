@@ -9,7 +9,7 @@ const Tour = require("./../models/tourModel");
 const APIFeatures = require("./../utils/apiFeatures");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
-const { deleteOne } = require("./handlerFactory");
+const factory = require("./handlerFactory");
 
 
 // * params middleware to check valid passed id
@@ -80,7 +80,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteTour = deleteOne(Tour);
+exports.deleteTour = factory.deleteOne(Tour);
 
 // * Top five cheap tour filter middleware
 exports.aliesTopFive = catchAsync((req, res, next) => {
