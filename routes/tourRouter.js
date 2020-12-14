@@ -9,11 +9,16 @@ const {
     
  } = require("./../controllers/tourController");
  const {protect, restrictTo } = require("../controllers/authController");
+ const reviewRouter = require("./reviewRouter");
+
 
 const tourRouter = express.Router();
 
 // tourRouter.param("id", checkId);
 
+// Nested routes ( review routes in tour routes)
+
+tourRouter.use("/:tourId/reviews", reviewRouter);
 
 // * GET request of top five cheap tours from tours collection
 tourRouter.get("/top-5-cheap", aliesTopFive, getAllTours);
