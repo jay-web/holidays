@@ -20,20 +20,20 @@ const tourRouter = express.Router();
 tourRouter.use("/:tourId/reviews", reviewRouter);
 
 // * GET request of top five cheap tours from tours collection
-tourRouter.get("/top-5-cheap", aliesTopFive, getAllTours);
+tourRouter.get("/top-5-cheap", protect, aliesTopFive, getAllTours);
 
 // * GET request of tours collection resource
 tourRouter.get("/", protect, getAllTours);
 
 // * GET request of tours collection resource to get single tour info
-tourRouter.get("/:id", getTour);
+tourRouter.get("/:id", protect, getTour);
 
 
 // * POST request to create/add new tour
-tourRouter.post("/", createTour);
+tourRouter.post("/", protect, restrictTo("admin", "lead-guide"), createTour);
 
 // * PATCH request of tour resource to edit/update any tour info
-tourRouter.patch("/:id", updateTour);
+tourRouter.patch("/:id", protect, restrictTo("admin", "lead-guide"), updateTour);
 
 // * DELETE request of tour resource to delete any tour as per id
 tourRouter.delete("/:id", protect, restrictTo("admin", "lead-guide"), deleteTour);

@@ -8,6 +8,7 @@ const reviewRouter = express.Router({ mergeParams : true});
 
 reviewRouter.get("/", protect, reviewController.getAllReview);
 reviewRouter.post("/", protect, restrictTo('user'), reviewController.createNewReview);
+reviewRouter.delete("/:id", reviewController.deleteReview);
 
 
 

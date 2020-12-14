@@ -1,5 +1,6 @@
 const Review = require("../models/reviewModel");
 const catchAsync = require("../utils/catchAsync");
+const {deleteOne} = require("./handlerFactory");
 
 const reviewController = {
 
@@ -40,7 +41,9 @@ const reviewController = {
                 review: newReview
             }
         })
-    })
+    }),
+
+    deleteReview : deleteOne(Review)
 }
 
 module.exports = reviewController;

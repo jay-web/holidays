@@ -2,6 +2,7 @@
 const User = require("../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
+const {deleteOne} = require("./handlerFactory");
 
 const filterRequestBody = (requestBody, ...allowedFields) => {
   const filterRequest = {};
@@ -63,12 +64,7 @@ exports.updateUser = (req, res) => {
   });
 };
 
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not created yet",
-  });
-};
+exports.deleteUser = deleteOne(User);
 
 
 // Middleware handler to update profile only name & email
