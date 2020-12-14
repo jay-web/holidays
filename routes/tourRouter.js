@@ -16,8 +16,7 @@ const tourRouter = express.Router();
 
 // tourRouter.param("id", checkId);
 
-// Nested routes ( review routes in tour routes)
-
+// **** Nested route ( review routes in tour routes)
 tourRouter.use("/:tourId/reviews", reviewRouter);
 
 // * GET request of top five cheap tours from tours collection

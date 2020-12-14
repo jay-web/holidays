@@ -5,11 +5,14 @@ const reviewController = {
 
     // middleware to get all reviews
     getAllReview : catchAsync(async (req, res, next) => {
+        let filter = {};
+        if(req.params.tourId) filter = {tour: req.params.tourId};
         
-        const allReview = await Review.find();
+        const allReview = await Review.find(filter);
 
         res.status(200).json({
             status: "success",
+            results: allReview.length,
             data: {
                 allReview
             }
