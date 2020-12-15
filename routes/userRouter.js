@@ -2,6 +2,7 @@ const express = require("express");
 const {
   getAllUsers,
   getUser,
+  getMe,
   createUser,
   updateUser,
   deleteUser,
@@ -14,13 +15,19 @@ const userRouter = express.Router();
 
 userRouter.post("/signup", authController.signUp);
 userRouter.post("/login", authController.login);
-
 userRouter.post("/forgotPassword", authController.forgotPassword);
 userRouter.patch("/resetPassword/:token", authController.resetPassword);
-userRouter.patch("/updatePassword", authController.protect, authController.updatePassword);
 
-userRouter.patch("/updateMe", authController.protect ,updateMe);
-userRouter.delete("/deleteMe", authController.protect, deleteMe);
+// Protect all middleware after this (need to login)
+userRouter.use(authController.protect);
+
+userRouter.patch("/updatePassword",  authController.updatePassword);
+userRouter.get("/me", getMe, getUser);
+userRouter.patch("/updateMe", updateMe);
+userRouter.delete("/deleteMe", deleteMe);
+
+// Restrict authorization to admin and lead-guide after this
+userRouter.use(authController.restrictTo("admin", "lead-guide"));
 
 userRouter.get("/", getAllUsers);
 userRouter.get("/:id", getUser);

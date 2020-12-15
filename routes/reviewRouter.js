@@ -6,9 +6,16 @@ const {protect, restrictTo} = require("../controllers/authController");
 
 const reviewRouter = express.Router({ mergeParams : true});
 
-reviewRouter.get("/", protect, reviewController.getAllReview);
-reviewRouter.post("/", protect, restrictTo('user'), reviewController.createNewReview);
-reviewRouter.patch("/:id", protect, restrictTo("user"), reviewController.updateReview);
+// Protect all the middleware after this.(need to login)
+reviewRouter.use(protect);
+
+reviewRouter.get("/", reviewController.getAllReview);
+reviewRouter.post("/", restrictTo('user'), reviewController.createNewReview);
+
+// Restrict authorization of middleware to user and admin only after this
+reviewRouter.use(restrictTo("user", "admin"));
+
+reviewRouter.patch("/:id", reviewController.updateReview);
 reviewRouter.delete("/:id", reviewController.deleteReview);
 
 

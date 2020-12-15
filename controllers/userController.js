@@ -17,6 +17,11 @@ const filterRequestBody = (requestBody, ...allowedFields) => {
 
 exports.getAllUsers = factory.getAll(User);
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+}
+
 exports.getUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
@@ -29,7 +34,7 @@ exports.getUser = catchAsync(async (req, res, next) => {
 });
 
 exports.createUser = (req, res, next) => {
-  res.status(500).json({
+  res.status(200).json({
     status: "error",
     message: "To create new user, please use '/users/signup' route",
   });
