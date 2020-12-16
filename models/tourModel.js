@@ -119,6 +119,7 @@ tourSchema.pre(/^find/, function(next) {
 
 
 
+
 // * Create tour model from schema
 const Tour = mongoose.model("Tour", tourSchema);
 
