@@ -19,7 +19,7 @@ const tourSchema = mongoose.Schema({
     },
     difficulty: {
         type: String,
-        enum: ["easy", "medium", "difficulty"],
+        enum: ["easy", "medium", "difficult"],
         required: [true, "A tour must have a difficulty"],
     },
     ratingsAverage: {
@@ -91,6 +91,10 @@ const tourSchema = mongoose.Schema({
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   });
+
+
+// Implementing indexing on price to improve query
+tourSchema.index({ price: 1, ratingsAverage: -1});  //! 1 means in ascending order
 
 // DOCUMENT MIDDLEWARE: run before .save() or .create()
 tourSchema.pre("save", function (next){

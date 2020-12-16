@@ -61,7 +61,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Middleware to encrypt the user password, before store in db
+// // Middleware to encrypt the user password, before store in db
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -72,7 +72,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// Middleware to set passwordChangedAt property after password changed
+// // Middleware to set passwordChangedAt property after password changed
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password") || this.isNew) return next();
