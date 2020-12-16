@@ -33,39 +33,63 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
-// Query Middleware 
-reviewSchema.pre(/^find/, function(next){
+// Query Middleware
+reviewSchema.pre(/^find/, function (next) {
   // this.populate({ path: "tour", select: "-guides name"}).populate({ path: "user", select: "name"})
-  this.populate({path: "user", select: "name"});
+  this.populate({ path: "user", select: "name" });
   next();
-})
+});
 
 // Statistic function to calculate average rating
-reviewSchema.statics.calcAverageRating = async function(tourId){
+reviewSchema.statics.calcAverageRating = async function (tourId) {
   const stats = await this.aggregate([
     {
-      $match: {tour : tourId}
-    }, 
+      $match: { tour: tourId },
+    },
     {
       $group: {
-        _id: '$tour',
-        nRatings: {$sum: 1},
-        avgRating: { $avg: '$rating'}
-      }
-    }
+        _id: "$tour",
+        nRatings: { $sum: 1 },
+        avgRating: { $avg: "$rating" },
+      },
+    },
   ]);
-
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsAverage: stats[0].avgRating,
-    ratingsQuantity: stats[0].nRatings
-  })
+  if(stats.length > 0){
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsAverage: stats[0].avgRating,
+      ratingsQuantity: stats[0].nRatings,
+    });
+  }else{
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsAverage: 4.5,
+      ratingsQuantity: 0
+    });
+  }
   
-}
+};
 
 // Call the above the statistic function after creating review
-reviewSchema.post("save", function(){
+reviewSchema.post("save", function () {
   this.constructor.calcAverageRating(this.tour);
+});
+
+// !To run the static function on update or delete query
+// ! We don't have document middleware to get the document on findById queries
+// ! We will we implement below middleware one by one
+
+// First - findOneAnd for findByIdAndupdate and findByIdAndDelete query
+reviewSchema.pre(/^findOneAnd/, async function(next){
+  // here we await the query 
+  this.r = await this.findOne(); // Save the doc in new property of object
+  next();
+});
+
+// Second - to run the static function on doc
+reviewSchema.post(/^findOneAnd/, async function(){
+  // ! we can't use this.findOne() here, since query is already executed before this middleware
+  await this.r.constructor.calcAverageRating(this.r.tour);
 })
+
 const Review = mongoose.model("Review", reviewSchema);
 
 module.exports = Review;
