@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
+const path = require("path");
 
 // ! Security packages 
 const rateLimiter = require("express-rate-limit");
@@ -16,6 +17,9 @@ const AppError = require("./utils/appError");
 const tourRouter = require("./routes/tourRouter");
 const userRouter = require("./routes/userRouter");
 const reviewRouter = require("./routes/reviewRouter");
+
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 
 
 // * Applying globally use middleware in app
@@ -47,9 +51,13 @@ app.use(xss());
 // middleware to protect from http parameter pollution
 app.use(hpp());
 
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, "public")));
 
 // * Applying middleware as per requested route
+app.get("/", (req, res) => {
+    res.status(200).render("base");
+})
+
 app.use("/api/v1/users", userRouter);
 app.use('/api/v1/tours', tourRouter);       // mounting routes
 app.use('/api/v1/review', reviewRouter);
