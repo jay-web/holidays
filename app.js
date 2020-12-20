@@ -17,6 +17,7 @@ const AppError = require("./utils/appError");
 const tourRouter = require("./routes/tourRouter");
 const userRouter = require("./routes/userRouter");
 const reviewRouter = require("./routes/reviewRouter");
+const viewRouter = require("./routes/viewsRouter");
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
@@ -54,10 +55,8 @@ app.use(hpp());
 app.use(express.static(path.join(__dirname, "public")));
 
 // * Applying middleware as per requested route
-app.get("/", (req, res) => {
-    res.status(200).render("base");
-})
 
+app.use("/", viewRouter);
 app.use("/api/v1/users", userRouter);
 app.use('/api/v1/tours', tourRouter);       // mounting routes
 app.use('/api/v1/review', reviewRouter);
