@@ -36,7 +36,7 @@ const reviewSchema = new mongoose.Schema(
 // Query Middleware
 reviewSchema.pre(/^find/, function (next) {
   // this.populate({ path: "tour", select: "-guides name"}).populate({ path: "user", select: "name"})
-  this.populate({ path: "user", select: "name" });
+  this.populate({ path: "user", select: "name photo" });
   next();
 });
 

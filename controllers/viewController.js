@@ -15,6 +15,19 @@ exports.getOverview = catchAsync(async (req, res, next) => {
 });
 
 
-exports.getTourDetail = (req, res) => {
-    res.status(200).render("tour")
-}
+exports.getTourDetail = catchAsync(async (req, res, next) => {
+    // get the individual tour
+    const tour = await Tour.findOne({ slug: req.params.slug}).populate(
+        {
+            path: "reviews",
+            fields: 'review rating user'
+        }
+    )
+
+    // build the template (it will be in views)
+    // send the view with data
+
+    res.status(200).render("tour", {
+        tour: tour
+    })
+});
