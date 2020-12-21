@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 // * Creating Schema of tour collection
 const tourSchema = mongoose.Schema({
@@ -9,6 +10,7 @@ const tourSchema = mongoose.Schema({
         trim: true,
         minLength: 5
     },
+    slug: String,
     duration: {
         type: Number,
         required: [true, "A tour must have a duration"],
@@ -98,6 +100,7 @@ tourSchema.index({ price: 1, ratingsAverage: -1});  //! 1 means in ascending ord
 
 // DOCUMENT MIDDLEWARE: run before .save() or .create()
 tourSchema.pre("save", function (next){
+    this.slug = slugify(this.name, {lower: true});
     next();
 })
 
