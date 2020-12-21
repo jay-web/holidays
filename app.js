@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const morgan = require("morgan");
 const path = require("path");
 
@@ -19,6 +20,8 @@ const userRouter = require("./routes/userRouter");
 const reviewRouter = require("./routes/reviewRouter");
 const viewRouter = require("./routes/viewsRouter");
 
+app.use(cors());
+
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
@@ -34,7 +37,7 @@ app.use(helmet());
 
 // Rate limiter middleware to set request limit from any IP
 const limiter = rateLimiter({
-    max: 50,
+    max: 100,
     windowMs: 60 * 60 * 1000,
     message: "Too many request from this IP, please try again after in an hour"
 })
