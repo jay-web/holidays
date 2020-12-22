@@ -32,7 +32,9 @@ if(process.env.NODE_ENV === 'development'){
     app.use(morgan('dev'));    
 }
 // Set security http header
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false,
+  }));
 
 
 // Rate limiter middleware to set request limit from any IP
