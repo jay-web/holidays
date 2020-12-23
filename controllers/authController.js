@@ -82,6 +82,8 @@ exports.protect = catchAsync(async (req, res, next) => {
   // Step 1 = Check whether token available in header or not
   if (req.headers && req.headers.authorization) {
     token = req.headers.authorization.split(" ")[1];
+  }else if(req.cookies.jwt){
+    token = req.cookies.jwt;
   }
 
   if (!token) {

@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const morgan = require("morgan");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 
 // ! Security packages 
 const rateLimiter = require("express-rate-limit");
@@ -47,6 +48,9 @@ app.use("/api", limiter);
 
 // middleware to read req.body
 app.use(express.json({ limit:  '10kb'}));    
+
+// middleware to read cookies
+app.use(cookieParser());
 
 // middleware to protect from NoSQL query injection ( Data Sanitization)
 app.use(mongoSanitize());
