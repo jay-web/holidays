@@ -1,8 +1,7 @@
-const locations = JSON.parse(document.getElementById('map').dataset.locations);
-console.log("map box integrated", locations);
 
 
-mapboxgl.accessToken = 'pk.eyJ1IjoianNkZXZlbG9wZXIiLCJhIjoiY2tpemxnYnlxMmlrMzJ4c2N6cTQ0cnVxZyJ9.GSz0IUv_9wcuy5Yqwv8ldA';
+export const showMap = locations => {
+    mapboxgl.accessToken = 'pk.eyJ1IjoianNkZXZlbG9wZXIiLCJhIjoiY2tpemxnYnlxMmlrMzJ4c2N6cTQ0cnVxZyJ9.GSz0IUv_9wcuy5Yqwv8ldA';
 var map = new mapboxgl.Map({
 container: 'map',
 style: 'mapbox://styles/jsdeveloper/ckj021dw888y019qodu0mrou3',
@@ -35,3 +34,4 @@ map.fitBounds(bounds, {
         left: 100
     }
 });
+}
