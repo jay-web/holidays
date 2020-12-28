@@ -1,6 +1,34 @@
 import axios from "axios";
 import { showAlert } from "./alert";
 
+export const signup = async (name, email, password, passwordConfirm) => {
+    console.log("signing up");
+    console.log(email, password, passwordConfirm);
+
+    try{
+        const res = await axios({
+            method: "POST",
+            url: "http://localhost:5000/api/v1/users/signup",
+            data: {
+                name,
+                email,
+                password,
+                passwordConfirm
+            }
+        });
+
+        if(res.data.status === "success"){
+            showAlert("success", "Welcome in Holidays !!!");
+            setTimeout(() => {
+                location.assign("/")
+            }, 1000);
+        }
+    }catch(error){
+        console.log(error);
+        showAlert("error" , error.response.data.message);
+    }
+}
+
 export const login = async (email, password) => {
     console.log(email, password);
     try{

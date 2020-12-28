@@ -12,5 +12,7 @@ viewRouter.get("/tour/:slug", viewController.getTourDetail);
 
 viewRouter.get("/login", viewController.getLoginForm);
 
+viewRouter.get("/signup", viewController.getSignupForm);
+
 
 module.exports = viewRouter;
