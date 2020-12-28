@@ -66,7 +66,7 @@ export const logout = async () => {
         if(res.data.status === "success"){
             showAlert("success", "Logged Out successfully");
             setTimeout(() => {
-                location.reload(true)
+                location.assign("/")
             }, 1000);
         }
     }catch(err){

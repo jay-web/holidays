@@ -1,6 +1,6 @@
 import "@babel/polyfill";
 import { login, logout, signup } from "./login";
-import {updateMe } from "./accountSetting";
+import {updateSetting } from "./accountSetting";
 import { showMap } from "./mapbox";
 
 
@@ -18,10 +18,12 @@ if(mapBox){
 const form = document.querySelector(".form--login");
 const signUpForm = document.querySelector(".signupForm");
 const dataUpdationForm = document.querySelector(".form-user-data");
+const updatePasswordForm = document.querySelector(".form-user-password");
 
 if(form){
     form.addEventListener("submit", e => {
         e.preventDefault();
+        document.querySelector(".btn--login").innerHTML = "Please wait";
         const email = document.querySelector("#email").value;
         const password = document.querySelector("#password").value;
         login(email, password);
@@ -32,6 +34,7 @@ if(signUpForm){
     console.log("sign up form")
     signUpForm.addEventListener("submit", e => {
         e.preventDefault();
+        document.querySelector(".btn--signup").innerHTML = "Please wait";
         const name = document.querySelector("#name").value;
         const email = document.querySelector("#email").value;
         const password = document.querySelector("#password").value;
@@ -45,7 +48,21 @@ if(dataUpdationForm){
         e.preventDefault();
         const name = document.querySelector("#name").value;
         const email = document.querySelector("#email").value;
-        updateMe(name, email);
+        updateSetting({name, email}, "data");
+    })
+}
+
+if(updatePasswordForm){
+    
+    updatePasswordForm.addEventListener("submit", e => {
+        console.log("udpate password")
+        document.querySelector(".btn--save-password").innerHTML = "Updating..."
+        e.preventDefault();
+        const oldPassword = document.querySelector("#password-current").value;
+        const password = document.querySelector("#password").value;
+        const passwordConfirm = document.querySelector("#password-confirm").value;
+        console.log(oldPassword, password, passwordConfirm)
+        updateSetting({oldPassword, password, passwordConfirm}, "password");
     })
 }
 

@@ -8596,7 +8596,7 @@ var logout = /*#__PURE__*/function () {
             if (res.data.status === "success") {
               (0, _alert.showAlert)("success", "Logged Out successfully");
               setTimeout(function () {
-                location.reload(true);
+                location.assign("/");
               }, 1000);
             }
 
@@ -8628,11 +8628,11 @@ exports.logout = logout;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateMe = void 0;
+exports.updateSetting = void 0;
 
 var _axios = _interopRequireDefault(require("axios"));
 
-var _alert = _interopRequireDefault(require("./alert"));
+var _alert = require("./alert");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8640,56 +8640,60 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var updateMe = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(name, email) {
-    var res;
+// type will be either password or data
+var updateSetting = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(dataToChange, type) {
+    var url, res, msg;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _context.next = 3;
+            url = type === "password" ? "http://localhost:5000/api/v1/users/updatePassword" : "http://localhost:5000/api/v1/users/updateMe";
+            _context.next = 4;
             return (0, _axios.default)({
               method: "PATCH",
-              url: "http://localhost:5000/api/v1/users/updateMe",
-              data: {
-                name: name,
-                email: email
-              }
+              url: url,
+              data: dataToChange
             });
 
-          case 3:
+          case 4:
             res = _context.sent;
+            console.log(res.data.status);
 
             if (res.data.status === "success") {
-              (0, _alert.default)("Account updated successfully");
+              (0, _alert.showAlert)("success", "".concat(type.toUpperCase(), " updated successfully"));
               setTimeout(function () {
                 location.reload(true);
               }, 1000);
             }
 
-            _context.next = 10;
+            _context.next = 14;
             break;
 
-          case 7:
-            _context.prev = 7;
+          case 9:
+            _context.prev = 9;
             _context.t0 = _context["catch"](0);
-            (0, _alert.default)("error", _context.t0.response.data.message);
+            console.log({
+              error: _context.t0
+            });
+            msg = _context.t0.response.data.message;
+            (0, _alert.showAlert)("error", msg);
 
-          case 10:
+          case 14:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 7]]);
+    }, _callee, null, [[0, 9]]);
   }));
 
-  return function updateMe(_x, _x2) {
+  return function updateSetting(_x, _x2) {
     return _ref.apply(this, arguments);
   };
 }();
 
-exports.updateMe = updateMe;
+exports.updateSetting = updateSetting;
 },{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"mapbox.js":[function(require,module,exports) {
 "use strict";
 
@@ -9009,10 +9013,12 @@ if (mapBox) {
 var form = document.querySelector(".form--login");
 var signUpForm = document.querySelector(".signupForm");
 var dataUpdationForm = document.querySelector(".form-user-data");
+var updatePasswordForm = document.querySelector(".form-user-password");
 
 if (form) {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
+    document.querySelector(".btn--login").innerHTML = "Please wait";
     var email = document.querySelector("#email").value;
     var password = document.querySelector("#password").value;
     (0, _login.login)(email, password);
@@ -9023,6 +9029,7 @@ if (signUpForm) {
   console.log("sign up form");
   signUpForm.addEventListener("submit", function (e) {
     e.preventDefault();
+    document.querySelector(".btn--signup").innerHTML = "Please wait";
     var name = document.querySelector("#name").value;
     var email = document.querySelector("#email").value;
     var password = document.querySelector("#password").value;
@@ -9036,7 +9043,27 @@ if (dataUpdationForm) {
     e.preventDefault();
     var name = document.querySelector("#name").value;
     var email = document.querySelector("#email").value;
-    (0, _accountSetting.updateMe)(name, email);
+    (0, _accountSetting.updateSetting)({
+      name: name,
+      email: email
+    }, "data");
+  });
+}
+
+if (updatePasswordForm) {
+  updatePasswordForm.addEventListener("submit", function (e) {
+    console.log("udpate password");
+    document.querySelector(".btn--save-password").innerHTML = "Updating...";
+    e.preventDefault();
+    var oldPassword = document.querySelector("#password-current").value;
+    var password = document.querySelector("#password").value;
+    var passwordConfirm = document.querySelector("#password-confirm").value;
+    console.log(oldPassword, password, passwordConfirm);
+    (0, _accountSetting.updateSetting)({
+      oldPassword: oldPassword,
+      password: password,
+      passwordConfirm: passwordConfirm
+    }, "password");
   });
 }
 
