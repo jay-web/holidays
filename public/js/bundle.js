@@ -8580,7 +8580,7 @@ var showMap = function showMap(locations) {
     container: 'map',
     style: 'mapbox://styles/jsdeveloper/ckj021dw888y019qodu0mrou3',
     // center: [ 77.08288978301849, 28.589066849215936],
-    // scrollZoom: false,
+    scrollZoom: false,
     zoom: 5
   });
   var bounds = new mapboxgl.LngLatBounds();

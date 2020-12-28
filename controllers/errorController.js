@@ -20,26 +20,54 @@ const handleValidationErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    err: err,
-    message: err.message,
-    stack: err.stack,
-  });
+// * Error handling in development
+const sendErrorDev = (err, req,  res) => {
+  // handling error coming while accessing api
+  if(req.originalUrl.startsWith("/api")){
+    return res.status(err.statusCode).json({
+      status: err.status,
+      err: err,
+      message: err.message,
+      stack: err.stack,
+    });
+  }else {
+    // handling error coming while accessing website
+    return res.status(err.statusCode).render("error", {
+      title: "Error from website",
+      msg: err.message
+    })
+  }
+  
 };
 
-const sendErrorProd = (err, res) => {
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
-  } else {
-    res.status(500).json({
-      status: "error",
-      message: "Something went wrong !!!",
-    });
+// * Error handling in production
+const sendErrorProd = (err, req, res) => {
+  // handling error coming while accessing api
+  if(req.originalUrl.startsWith("/api")){
+    if (err.isOperational) {
+      res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    } else {
+      res.status(500).json({
+        status: "error",
+        message: "Something went wrong !!!",
+      });
+    }
+  }else{
+      // handling error coming while accessing website
+    if (err.isOperational) {
+      res.status(err.statusCode).render("error", {
+        title: "Error from website",
+        msg: err.message,
+      });
+    } else {
+      res.status(500).render("error", {
+        title: "Error from website",
+        msg: "Something went wrong, please try again !!!",
+      });
+    }
   }
 };
 
@@ -56,7 +84,7 @@ const globalErrorHandler = (err, req, res, next) => {
   err.status = err.status || "error";
 
   if (process.env.NODE_ENV === "development") {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === "production") {
     let error = Object.assign(err);
 
@@ -82,7 +110,7 @@ const globalErrorHandler = (err, req, res, next) => {
     if (err.name === "TokenExpiredError") {
       error = handleTokenExpiredError();
     }
-    sendErrorProd(error, res);
+    sendErrorProd(error, req,  res);
   }
 };
 

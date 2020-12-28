@@ -1,10 +1,14 @@
 const Tour = require("../models/tourModel");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 
 exports.getOverview = catchAsync(async (req, res, next) => {
     // Get the tours from the collection
     const tours = await Tour.find();
 
+    if(!tours){
+        return next(new AppError("No tours are available !!!", 404));
+    }
     // Build the template ( it will be in views)
 
     // Send the data with template
@@ -24,6 +28,9 @@ exports.getTourDetail = catchAsync(async (req, res, next) => {
         }
     )
 
+    if(!tour){
+        return next(new AppError(`No tour is available with the name - ${req.params.slug} !!!`, 404));
+    }
     // build the template (it will be in views)
     // send the view with data
 
