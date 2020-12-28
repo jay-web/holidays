@@ -1,5 +1,6 @@
 import "@babel/polyfill";
 import { login, logout, signup } from "./login";
+import {updateMe } from "./accountSetting";
 import { showMap } from "./mapbox";
 
 
@@ -14,8 +15,9 @@ if(mapBox){
     showMap(locations);
 }
 
-const form = document.querySelector(".form");
+const form = document.querySelector(".form--login");
 const signUpForm = document.querySelector(".signupForm");
+const dataUpdationForm = document.querySelector(".form-user-data");
 
 if(form){
     form.addEventListener("submit", e => {
@@ -38,5 +40,14 @@ if(signUpForm){
     })
 }
 
+if(dataUpdationForm){
+    dataUpdationForm.addEventListener("submit", e => {
+        e.preventDefault();
+        const name = document.querySelector("#name").value;
+        const email = document.querySelector("#email").value;
+        updateMe(name, email);
+    })
+}
+
 if(logoutButton) logoutButton.addEventListener("click", logout);
-// if(signupButton) signupButton.addEventListener("click", )
+

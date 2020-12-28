@@ -128,6 +128,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // Finally if above steps are fine, so will grant the access
   req.user = currentUser; // !  Very important passing the
   // ! user to the request to get used in later middleware
+  res.locals.user = currentUser;
 
   next();
 });
