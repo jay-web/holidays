@@ -7,7 +7,8 @@ const {
   updateUser,
   deleteUser,
   updateMe,
-  deleteMe
+  deleteMe,
+  getUploadPhoto
 } = require("./../controllers/userController");
 const authController = require("./../controllers/authController");
 
@@ -25,7 +26,7 @@ userRouter.use(authController.protect);
 
 userRouter.patch("/updatePassword",  authController.updatePassword);
 userRouter.get("/me", getMe, getUser);
-userRouter.patch("/updateMe", updateMe);
+userRouter.patch("/updateMe", getUploadPhoto, updateMe);
 userRouter.delete("/deleteMe", deleteMe);
 
 // Restrict authorization to admin and lead-guide after this
