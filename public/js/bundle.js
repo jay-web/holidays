@@ -8648,16 +8648,19 @@ var updateSetting = /*#__PURE__*/function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.prev = 0;
+            console.log({
+              dataToChange: dataToChange
+            });
+            _context.prev = 1;
             url = type === "password" ? "http://localhost:5000/api/v1/users/updatePassword" : "http://localhost:5000/api/v1/users/updateMe";
-            _context.next = 4;
+            _context.next = 5;
             return (0, _axios.default)({
               method: "PATCH",
               url: url,
               data: dataToChange
             });
 
-          case 4:
+          case 5:
             res = _context.sent;
             console.log(res.data.status);
 
@@ -8668,24 +8671,24 @@ var updateSetting = /*#__PURE__*/function () {
               }, 1000);
             }
 
-            _context.next = 14;
+            _context.next = 15;
             break;
 
-          case 9:
-            _context.prev = 9;
-            _context.t0 = _context["catch"](0);
+          case 10:
+            _context.prev = 10;
+            _context.t0 = _context["catch"](1);
             console.log({
               error: _context.t0
             });
             msg = _context.t0.response.data.message;
             (0, _alert.showAlert)("error", msg);
 
-          case 14:
+          case 15:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 9]]);
+    }, _callee, null, [[1, 10]]);
   }));
 
   return function updateSetting(_x, _x2) {
@@ -9041,12 +9044,11 @@ if (signUpForm) {
 if (dataUpdationForm) {
   dataUpdationForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    var name = document.querySelector("#name").value;
-    var email = document.querySelector("#email").value;
-    (0, _accountSetting.updateSetting)({
-      name: name,
-      email: email
-    }, "data");
+    var userForm = new FormData();
+    userForm.append("name", document.querySelector("#name").value);
+    userForm.append("email", document.querySelector("#email").value);
+    userForm.append("photo", document.querySelector("#photo").files[0]);
+    (0, _accountSetting.updateSetting)(userForm, "data");
   });
 }
 
@@ -9096,7 +9098,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54527" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55827" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -46,9 +46,12 @@ if(signUpForm){
 if(dataUpdationForm){
     dataUpdationForm.addEventListener("submit", e => {
         e.preventDefault();
-        const name = document.querySelector("#name").value;
-        const email = document.querySelector("#email").value;
-        updateSetting({name, email}, "data");
+        const userForm = new FormData();
+        userForm.append("name", document.querySelector("#name").value);
+        userForm.append("email", document.querySelector("#email").value);
+        userForm.append("photo", document.querySelector("#photo").files[0]);
+        
+        updateSetting(userForm, "data");
     })
 }
 
