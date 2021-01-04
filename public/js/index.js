@@ -1,7 +1,8 @@
 import "@babel/polyfill";
-import { login, logout, signup } from "./login";
+import { login, logout, signup, forgotPassword , resetPassword } from "./login";
 import {updateSetting } from "./accountSetting";
 import { showMap } from "./mapbox";
+
 
 
 const mapBox = document.getElementById('map');
@@ -19,6 +20,9 @@ const form = document.querySelector(".form--login");
 const signUpForm = document.querySelector(".signupForm");
 const dataUpdationForm = document.querySelector(".form-user-data");
 const updatePasswordForm = document.querySelector(".form-user-password");
+const forgotPasswordForm = document.querySelector(".forgotPassword");
+const resetPasswordForm = document.querySelector(".resetPasswordForm");
+
 
 if(form){
     form.addEventListener("submit", e => {
@@ -66,6 +70,29 @@ if(updatePasswordForm){
         const passwordConfirm = document.querySelector("#password-confirm").value;
         console.log(oldPassword, password, passwordConfirm)
         updateSetting({oldPassword, password, passwordConfirm}, "password");
+    })
+}
+
+if(forgotPasswordForm){
+  
+    forgotPasswordForm.addEventListener("submit", (e) => {
+        console.log("Forgot password");
+        document.querySelector(".btn--forgotPassword").innerHTML = "Please wait..."
+        e.preventDefault();
+        const email = document.querySelector("#email").value;
+        forgotPassword(email);
+    })
+}
+
+if(resetPasswordForm){
+    resetPasswordForm.addEventListener("submit", (e) => {
+        console.log(e);
+        e.preventDefault();
+        const password = document.querySelector("#password").value;
+        const passwordConfirm = document.querySelector("#confirmpassword").value;
+        const resetToken = e.path[6].location.pathname.split("/")[2];
+        console.log(resetToken);
+        resetPassword(password, passwordConfirm, resetToken);
     })
 }
 

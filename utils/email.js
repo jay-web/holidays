@@ -1,29 +1,60 @@
 const nodemailer = require("nodemailer");
+const pug = require("pug");
+const htmlToText = require("html-to-text");
 
-const sendEmail = async (options) => {
-    // Create the transporter USING EMAIL SERVICE PROVIDER LIKE GMAIL OR SOMETHING ELSE
-    // Here using EMAIL TRAP SERVICE PROVIDER FOR TESTING
-    const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT,
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-          }
-    })
-
-    // Create the mail with options
-
-    const emailOption = {
-        from : "'Jay Sharma' <holidays.com>",
-        to : options.email,
-        subject: options.subject,
-        text: options.message
+module.exports = class Email {
+    constructor(user, url){
+        this.to = user.email,
+        this.firstName  = user.name.split(" ")[0],
+        this.url = url,
+        this.from = `Jay Sharma <${process.env.EMAIL_FROM}>`
     }
 
-    // Send the email
+    newTransport(){
+        if(process.env.NODE_ENV === "production"){
+            return 1;
+        }
 
-    await transporter.sendMail(emailOption);
+        return nodemailer.createTransport({
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+              }
+        });
+    }
+
+    // Send the actual mail
+    async send(template, subject){
+        const html = pug.renderFile(`${__dirname}/../views/emails/${template}.pug`, {
+            firstName: this.firstName,
+            url: this.url
+        });
+
+        // Define email options
+        const emailOption = {
+            from : this.from,
+            to : this.to,
+            subject: subject,
+            html: html,
+            text: htmlToText.fromString(html)
+        }
+
+        // Create the transport and send the mail
+        await this.newTransport().sendMail(emailOption);
+    }
+
+    // Send welcome email method
+
+    async sendWelcome(){
+        await this.send("welcome", "Welcome to the Holidays Family");
+    }
+
+    // Send reset password email method
+
+    async resetPasswordEmail(){
+        await this.send("forgetPassword", "Reset password instructions");
+    }
+
 }
-
-module.exports = sendEmail;

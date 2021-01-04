@@ -1,6 +1,7 @@
 const Tour = require("../models/tourModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const { reset } = require("nodemon");
 
 exports.getOverview = catchAsync(async (req, res, next) => {
     // Get the tours from the collection
@@ -54,5 +55,25 @@ exports.getSignupForm = (req, res) => {
 exports.getAccountPage = (req, res ) => {
     res.status(200).render("account", {
         title: "Your account"
+    })
+}
+
+exports.forgotPassword = (req, res) => {
+    res.status(200).render("forgotPassword", {
+        title: "Forgot password"
+    })
+}
+
+exports.passwordInstruction = (req, res) => {
+    res.status(200).render("passwordInstruction", {
+        title: "Reset password instruction"
+    })
+}
+
+exports.resetPassword = (req, res) => {
+    const resetToken = req.params.resetPasswordToken;
+    res.status(200).render("resetPassword", {
+        title: "Reset password",
+        token : resetToken
     })
 }

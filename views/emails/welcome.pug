@@ -1,0 +1,46 @@
+extends baseEmail
+
+block content
+    div
+        table(align='center' background='https://assets.opensourceemails.com/imgs/lifestyle/binu6fnar8unlra4bqse_osetu-product-header.jpg' border='0' cellpadding='0' cellspacing='0' role='presentation' style='background:#f0f0f0 url(https://assets.opensourceemails.com/imgs/lifestyle/binu6fnar8unlra4bqse_osetu-product-header.jpg) top center / cover no-repeat;width:100%;')
+            tbody
+                tr
+                    td
+                        //if mso | IE
+                            v:rect(style='mso-width-percent:1000;' xmlns:v='urn:schemas-microsoft-com:vml' fill='true' stroke='false')
+                                v:fill(src='https://assets.opensourceemails.com/imgs/lifestyle/binu6fnar8unlra4bqse_osetu-product-header.jpg' color='#f0f0f0' origin='0.5, 0' position='0.5, 0' type='tile')
+                                    v:textbox(style='mso-fit-shape-to-text:true' inset='0,0,0,0')
+                        div(style='margin:0px auto;max-width:600px;')
+                            div(style='font-size:0;line-height:0;')
+                                table(align='center' border='0' cellpadding='0' cellspacing='0' role='presentation' style='width:100%;')
+                                    tbody
+                                        tr
+                                            td(style='direction:ltr;font-size:0px;padding:0px;text-align:center;vertical-align:top;')
+                                                //if mso | IE
+                                                    table(role='presentation' border='0' cellpadding='0' cellspacing='0')
+                                                        tr
+                                                            td(style='vertical-align:top;width:600px;')
+                                                .dys-column-per-100.outlook-group-fix(style='direction:ltr;display:inline-block;font-size:13px;text-align:left;vertical-align:top;width:100%;')
+                                                    table(border='0' cellpadding='0' cellspacing='0' role='presentation' width='100%')
+                                                        tbody
+                                                            tr
+                                                                td(style='padding:40px 20px;vertical-align:top;')
+                                                                    table(border='0' cellpadding='0' cellspacing='0' role='presentation' style='' width='100%')
+                                                                        tr
+                                                                            td(align='left' style='font-size:0px;padding:2px 25px;padding-bottom:0px;word-break:break-word;')
+                                                                                div(style='color:#000000;font-family:Martel;font-size:15px;font-weight:900;line-height:72px;text-align:left;')
+                                                                                     p Hi #{firstName},
+                                                                                     p Welcome to Holidays, we're glad to have you 🎉🙏
+                                                                                     p We're all a big familiy here, so make sure to upload your user photo so we get to know you a bit better!
+                                                                        //- tr
+                                                                        //-     td(align='left' style='font-size:0px;padding:10px 25px;padding-bottom:50px;padding-top:00px;word-break:break-word;')
+                                                                        //-         div(style='color:#000000;font-family:Martel;font-size:20px;font-weight:900;line-height:72px;text-align:left;')
+                                                                        //-             | Welcome in Holidays Family !! Upload your photo using below link and start your adventure.
+                                                                        tr
+                                                                            td(align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;' vertical-align='middle')
+                                                                                table(border='0' cellpadding='0' cellspacing='0' role='presentation' style='border-collapse:separate;line-height:100%;')
+                                                                                    tr
+                                                                                        td(align='center' bgcolor='BLACK' role='presentation' style='background-color:BLACK;border:none;border-radius:0px;cursor:auto;padding:10px 25px;' valign='middle')
+                                                                                            a(href=`${url}` style='background:BLACK;color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:22px;font-weight:normal;line-height:120%;margin:0;text-decoration:none;text-transform:none;' target='_blank')
+                                                                                                | Upload your photo
+                                                

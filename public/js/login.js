@@ -74,3 +74,42 @@ export const logout = async () => {
     }
 }
 
+export const forgotPassword = async (email) => {
+    console.log(email);
+    try{
+        const res = await axios({
+            method: "POST",
+            url: "http://localhost:5000/api/v1/users/forgotPassword",
+            data: {
+                email: email
+            }
+        });
+        console.log({res});
+        if(res.data.status === "success"){
+            location.assign("/passwordInstruction")
+        }
+    }catch(error) {
+        showAlert("error", error.message)
+    }
+}
+
+export const resetPassword = async (password, passwordConfirm, resetToken) => {
+    try{
+        const res = await axios({
+            method: "PATCH",
+            url: `http://localhost:5000/api/v1/users/resetPassword/${resetToken}`,
+            data: {
+                password: password,
+                passwordConfirm: passwordConfirm
+            }
+        })
+        if(res.data.status === "success"){
+            showAlert("success", "Password reset successfully");
+            setTimeout(() => {
+                location.assign("/")
+            }, 1000);
+        }
+    }catch(error){
+        showAlert("error", error.message);
+    }
+}

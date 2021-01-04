@@ -10,6 +10,12 @@ viewRouter.get("/tour/:slug", authController.isLoggedIn, viewController.getTourD
 
 viewRouter.get("/login", viewController.getLoginForm);
 
+viewRouter.get("/forgotPassword", viewController.forgotPassword);
+
+viewRouter.get("/passwordInstruction", viewController.passwordInstruction);
+
+viewRouter.get("/resetPassword/:resetPasswordToken", viewController.resetPassword);
+
 viewRouter.get("/signup", viewController.getSignupForm);
 
 viewRouter.get("/me", authController.protect, viewController.getAccountPage);
