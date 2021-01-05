@@ -2,7 +2,7 @@ import "@babel/polyfill";
 import { login, logout, signup, forgotPassword , resetPassword } from "./login";
 import {updateSetting } from "./accountSetting";
 import { showMap } from "./mapbox";
-
+import { bookTour } from "./stripe";
 
 
 const mapBox = document.getElementById('map');
@@ -11,7 +11,7 @@ const logoutButton = document.querySelector(".nav__el--logout");
  
 if(mapBox){
     const locations = JSON.parse(mapBox.dataset.locations);
-    console.log("map box integrated", locations);
+    // console.log("map box integrated", locations);
     
     showMap(locations);
 }
@@ -22,6 +22,7 @@ const dataUpdationForm = document.querySelector(".form-user-data");
 const updatePasswordForm = document.querySelector(".form-user-password");
 const forgotPasswordForm = document.querySelector(".forgotPassword");
 const resetPasswordForm = document.querySelector(".resetPasswordForm");
+const bookButton = document.querySelector("#book-tour");
 
 
 if(form){
@@ -62,7 +63,7 @@ if(dataUpdationForm){
 if(updatePasswordForm){
     
     updatePasswordForm.addEventListener("submit", e => {
-        console.log("udpate password")
+        // console.log("udpate password")
         document.querySelector(".btn--save-password").innerHTML = "Updating..."
         e.preventDefault();
         const oldPassword = document.querySelector("#password-current").value;
@@ -76,7 +77,7 @@ if(updatePasswordForm){
 if(forgotPasswordForm){
   
     forgotPasswordForm.addEventListener("submit", (e) => {
-        console.log("Forgot password");
+        // console.log("Forgot password");
         document.querySelector(".btn--forgotPassword").innerHTML = "Please wait..."
         e.preventDefault();
         const email = document.querySelector("#email").value;
@@ -86,15 +87,22 @@ if(forgotPasswordForm){
 
 if(resetPasswordForm){
     resetPasswordForm.addEventListener("submit", (e) => {
-        console.log(e);
+        // console.log(e);
         e.preventDefault();
         const password = document.querySelector("#password").value;
         const passwordConfirm = document.querySelector("#confirmpassword").value;
         const resetToken = e.path[6].location.pathname.split("/")[2];
-        console.log(resetToken);
+        // console.log(resetToken);
         resetPassword(password, passwordConfirm, resetToken);
     })
 }
 
 if(logoutButton) logoutButton.addEventListener("click", logout);
 
+if(bookButton){
+    bookButton.addEventListener("click", (e) => {
+        e.target.textContent = "Processing";
+        const tourId = e.target.dataset.tourId;
+        bookTour(tourId);
+    })
+}
