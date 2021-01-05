@@ -20,6 +20,7 @@ const tourRouter = require("./routes/tourRouter");
 const userRouter = require("./routes/userRouter");
 const reviewRouter = require("./routes/reviewRouter");
 const viewRouter = require("./routes/viewsRouter");
+const bookingRouter = require("./routes/bookingRouter");
 
 app.use(cors());
 
@@ -69,6 +70,7 @@ app.use("/", viewRouter);
 app.use("/api/v1/users", userRouter);
 app.use('/api/v1/tours', tourRouter);       // mounting routes
 app.use('/api/v1/review', reviewRouter);
+app.use('/api/v1/booking', bookingRouter);
 
 // * Middleware to handle undefined routes
 app.all("*", (req, res, next) => {

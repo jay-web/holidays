@@ -45,6 +45,7 @@ const sendToken = (user, res, statusCode) => {
 // Middleware for sign up
 exports.signUp = catchAsync(async (req, res, next) => {
   // const newUser = await User.create(req.body);
+  
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -53,9 +54,13 @@ exports.signUp = catchAsync(async (req, res, next) => {
     passwordChangedAt: req.body.passwordChangedAt,
     role: req.body.role,
   });
-
+  
   const url = `${req.protocol}://${req.get('host')}/me`;
-  await new Email(newUser, url).sendWelcome();
+  console.log({url});
+  if(process.env.NODE_ENV === "development"){
+    await new Email(newUser, url).sendWelcome();
+  }
+  
   sendToken(newUser, res, 201);
 });
 
@@ -210,7 +215,10 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     const resetURL = `${req.protocol}://${req.get(
     "host"
   )}/resetPassword/${resetToken}`;
-    await new Email(user, resetURL).resetPasswordEmail();
+    if(process.env.NODE_ENV === "development"){
+      await new Email(user, resetURL).resetPasswordEmail();
+    }
+    
 
     res.status(201).json({
       status: "success",
