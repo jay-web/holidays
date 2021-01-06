@@ -8,7 +8,7 @@ export const signup = async (name, email, password, passwordConfirm) => {
     try{
         const res = await axios({
             method: "POST",
-            url: "http://localhost:5000/api/v1/users/signup",
+            url: "/api/v1/users/signup",
             data: {
                 name,
                 email,
@@ -35,7 +35,7 @@ export const login = async (email, password) => {
         const res = await axios(
             {
              method: "POST",
-             url: "http://localhost:5000/api/v1/users/login",
+             url: "/api/v1/users/login",
              data: {
                  email,
                  password
@@ -61,7 +61,7 @@ export const logout = async () => {
     try{
         const res = await axios({
             method: "GET",
-            url: "http://localhost:5000/api/v1/users/logout"
+            url: "/api/v1/users/logout"
         })
         if(res.data.status === "success"){
             showAlert("success", "Logged Out successfully");
@@ -79,7 +79,7 @@ export const forgotPassword = async (email) => {
     try{
         const res = await axios({
             method: "POST",
-            url: "http://localhost:5000/api/v1/users/forgotPassword",
+            url: "/api/v1/users/forgotPassword",
             data: {
                 email: email
             }
@@ -97,7 +97,7 @@ export const resetPassword = async (password, passwordConfirm, resetToken) => {
     try{
         const res = await axios({
             method: "PATCH",
-            url: `http://localhost:5000/api/v1/users/resetPassword/${resetToken}`,
+            url: `/api/v1/users/resetPassword/${resetToken}`,
             data: {
                 password: password,
                 passwordConfirm: passwordConfirm

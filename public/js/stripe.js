@@ -5,7 +5,7 @@ const showAlert = require("./alert");
 export const bookTour =  async (tourId) => {
     // Get the checkout session
     try{
-        const res = await axios.get(`http://localhost:5000/api/v1/booking/checkout-session/${tourId}`);
+        const res = await axios.get(`/api/v1/booking/checkout-session/${tourId}`);
 
         await stripe.redirectToCheckout({
             sessionId: res.data.session.id

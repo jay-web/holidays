@@ -4,6 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const compression = require("compression");
 
 // ! Security packages 
 const rateLimiter = require("express-rate-limit");
@@ -46,6 +47,8 @@ const limiter = rateLimiter({
     message: "Too many request from this IP, please try again after in an hour"
 })
 app.use("/api", limiter);
+
+app.use(compression());
 
 // middleware to read req.body
 app.use(express.json({ limit:  '10kb'}));    
