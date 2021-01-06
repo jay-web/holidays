@@ -1,7 +1,7 @@
 const Tour = require("../models/tourModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
-const { reset } = require("nodemon");
+// const { reset } = require("nodemon");
 
 exports.getOverview = catchAsync(async (req, res, next) => {
     // Get the tours from the collection
