@@ -14,7 +14,7 @@ const createToken = (userId) => {
   );
 };
 
-const sendToken = (user, res, statusCode) => {
+const sendToken = (user, req, res, statusCode) => {
   const token = createToken(user.id);
 
   // To prevent CROSS SITE SCRIPTING XSS ATTACKS,
@@ -25,11 +25,12 @@ const sendToken = (user, res, statusCode) => {
       Date.now() + process.env.JWT_EXPIRES_COOKIE_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
+    secure : req.secure || req.headers['x-forwarded-proto'] === 'https'
   };
 
-  if (process.env.NODE_ENV === "production") {
-    cookieOptions.secure = true;
-  }
+  // if (process.env.NODE_ENV === "production") {
+  //   cookieOptions.secure = true;
+  // }
 
   res.cookie("jwt", token, cookieOptions);
 
@@ -61,7 +62,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     await new Email(newUser, url).sendWelcome();
   }
   
-  sendToken(newUser, res, 201);
+  sendToken(newUser, req, res,  201);
 });
 
 // Middleware for login user
@@ -82,7 +83,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // finally send the response with token, if email or password is correct
-  sendToken(user, res, 200);
+  sendToken(user, req, res, 200);
 });
 
 exports.logout = catchAsync(async (req, res, next) => {
@@ -262,7 +263,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // ! Step 3 occur in user model
 
   // 4 log in user, send jwt
-  sendToken(user, res, 200);
+  sendToken(user, req, res, 200);
 });
 
 // Middleware to handle update password request if user already login
@@ -293,5 +294,5 @@ exports.updatePassword = catchAsync(async function (req, res, next) {
   await user.save();
 
   // Finally logged in user again, send jwt
-  sendToken(user, res, 200);
+  sendToken(user, req, res, 200);
 });

@@ -23,7 +23,10 @@ const reviewRouter = require("./routes/reviewRouter");
 const viewRouter = require("./routes/viewsRouter");
 const bookingRouter = require("./routes/bookingRouter");
 
-app.use(cors());
+app.enable('trust-proxy');
+app.use(cors());    // enabling header - Access Control Allow ORIGIN
+
+app.options("*", cors()); // enabling patch, put, delete request on cors
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
