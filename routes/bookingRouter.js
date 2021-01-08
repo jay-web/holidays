@@ -8,5 +8,7 @@ const bookingRouter = express.Router();
 
 bookingRouter.get("/checkout-session/:tourID", protect, bookingController.getCheckoutSession);
 
+bookingRouter.post("/webhook-checkout", protect, bookingController.webhookCheckout)
+
 
 module.exports = bookingRouter;

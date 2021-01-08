@@ -1,5 +1,7 @@
 const catchAsync = require("../utils/catchAsync");
 const Tour = require("../models/tourModel");
+const User = require("../models/userModel");
+const Booking = require("../models/bookingModel");
 const AppError = require("../utils/appError");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -20,7 +22,7 @@ exports.getCheckoutSession = catchAsync( async (req, res, next) => {
             {
                 name: tour.name,
                 description: tour.summary,
-                images: [`https://www.natours.dev/img/tours/${tour.imageCover}`], // only on live domain
+                images: [`${req.protocol}://${req.get('host')}/${tour.imageCover}`], // only on live domain
                 amount: tour.price * 100,// convert into cents
                 currency: 'usd',
                 quantity: 1
@@ -35,3 +37,33 @@ exports.getCheckoutSession = catchAsync( async (req, res, next) => {
         session: session
     })
 });
+
+const createBookingCheckout = (session) => {
+    const tour = session.client_reference_id;
+    const user = (await User.findOne({ email: session.customer_email})).id;
+    const price = session.display_items[0].amount / 100;
+    await Booking.create({ tour, user, price})
+}
+
+exports.webhookCheckout = (req, res, next) => {
+    const signature = req.headers['stripe-signature'];
+
+    let event;
+    try {   
+        event = stripe.webhooks.constructEvent(
+            req.body,
+            signature,
+            process.env.STRIPE_WEBHOOK_KEY
+        );
+
+    }catch(err){
+        return res.status(400).send(`Webhook error : ${err.message}`)
+    }
+
+    if(event.type === "checkout.session.completed"){
+        createBookingCheckout(event.data.object);
+    }
+
+    res.status(200).json({ received : true});
+
+}
