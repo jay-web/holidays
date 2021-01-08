@@ -20,5 +20,9 @@ viewRouter.get("/signup", viewController.getSignupForm);
 
 viewRouter.get("/me", authController.protect, viewController.getAccountPage);
 
+viewRouter.get("/my-tour", authController.protect, viewController.myBooking);
+
+
+
 
 module.exports = viewRouter;

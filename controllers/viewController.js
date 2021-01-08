@@ -1,6 +1,7 @@
 const Tour = require("../models/tourModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const Booking = require("../models/bookingModel");
 // const { reset } = require("nodemon");
 
 exports.getOverview = catchAsync(async (req, res, next) => {
@@ -77,3 +78,25 @@ exports.resetPassword = (req, res) => {
         token : resetToken
     })
 }
+
+exports.myBooking = catchAsync(async (req, res, next) => {
+    console.log( "user 🧶  ", req.user.id);
+    // Get the tours from the collection
+    const bookings = await Booking.find({ user: req.user.id});
+
+    const tourId = bookings.map((el)  => el.tour.id);       // array of tour id booked
+
+    const tours = await Tour.find({_id : {$in: tourId}});
+    console.log( "bookings 🧶  ", tours);
+    
+    if(!bookings){
+        return next(new AppError("No tour has been booked by you  !!!", 404));
+    }
+    // Build the template ( it will be in views)
+
+    // Send the data with template
+    res.status(200).render("overview", {
+        title: "Booked Tours",
+        tours: tours
+    })
+});

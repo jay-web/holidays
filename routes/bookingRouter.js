@@ -5,6 +5,7 @@ const {protect, restrictTo} = require("../controllers/authController");
 
 const bookingRouter = express.Router();
 
+bookingRouter.get("/my-tour", bookingController.getAllBooking);
 
 bookingRouter.get("/checkout-session/:tourID", protect, bookingController.getCheckoutSession);
 
