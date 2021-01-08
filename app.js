@@ -22,6 +22,7 @@ const userRouter = require("./routes/userRouter");
 const reviewRouter = require("./routes/reviewRouter");
 const viewRouter = require("./routes/viewsRouter");
 const bookingRouter = require("./routes/bookingRouter");
+const bookingController = require("./controllers/bookingController");
 
 app.enable('trust-proxy');
 app.use(cors());    // enabling header - Access Control Allow ORIGIN
@@ -52,6 +53,8 @@ const limiter = rateLimiter({
 app.use("/api", limiter);
 
 app.use(compression());
+
+app.post('/webhook-checkout', express.raw({ type: 'application/json'}), bookingController.webhookCheckout);
 
 // middleware to read req.body
 app.use(express.json({ limit:  '10kb'}));    
