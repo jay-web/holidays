@@ -22,7 +22,7 @@ exports.getCheckoutSession = catchAsync( async (req, res, next) => {
             {
                 name: tour.name,
                 description: tour.summary,
-                images: [`${req.protocol}://${req.get('host')}/${tour.imageCover}`], // only on live domain
+                images: [`${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`], // only on live domain
                 amount: tour.price * 100,// convert into cents
                 currency: 'usd',
                 quantity: 1
