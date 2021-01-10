@@ -101,3 +101,35 @@ exports.aliesTopFive = catchAsync((req, res, next) => {
 
   next();
 });
+
+
+// * Get tours within distance as per your location
+exports.getToursWithin = catchAsync(async(req, res, next) => {
+
+  const {distance, latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(",");
+
+  // converting distance into radian
+  // divide the distance with radius of the earth
+  // in miles 3963.2 is the radius of the earth
+  // in kilimeter 6378.1 is the radius of the earth
+  const radius = unit === 'mi' ? distance / 3963.2 : distance /6378.1;
+
+  if(!lat || !lng){
+    next(new AppError("Please provide latitude and longitude in the format lat, lng", 400))
+  }
+
+  const tours = await Tour.find({
+    startLocation : { $geoWithin : { $centerSphere: [ [lng, lat], radius]}}
+    // ! Note use longitude first then lat as per mongo doc
+  })
+
+  res.status(200).json({
+    status: "success",
+    results: tours.length,
+    data: {
+      data: tours
+    }
+  })
+  
+});

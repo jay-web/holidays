@@ -23,6 +23,9 @@ tourRouter.get("/top-5-cheap", tourController.aliesTopFive, tourController.getAl
 // * GET request of tours collection resource to get single tour info
 tourRouter.get("/:id", tourController.getTour);
 
+// * Get tours within your specified distance from your location
+tourRouter.get("/tours-within/:distance/center/:latlng/unit/:unit", tourController.getToursWithin);
+
 // ! All the routes restriced authorization to admin and lead-guide after this
 tourRouter.use(restrictTo("admin", "lead-guide"));
 

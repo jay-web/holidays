@@ -97,6 +97,8 @@ const tourSchema = mongoose.Schema({
 
 // Implementing indexing on price to improve query
 tourSchema.index({ price: 1, ratingsAverage: -1});  //! 1 means in ascending order
+tourSchema.index({ slug: 1});
+tourSchema.index({ startLocation: '2dsphere'})
 
 // DOCUMENT MIDDLEWARE: run before .save() or .create()
 tourSchema.pre("save", function (next){
