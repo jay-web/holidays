@@ -26,6 +26,9 @@ tourRouter.get("/:id", tourController.getTour);
 // * Get tours within your specified distance from your location
 tourRouter.get("/tours-within/:distance/center/:latlng/unit/:unit", tourController.getToursWithin);
 
+// * Get tours distances from the user location
+tourRouter.get("/distances/:latlng/unit/:unit", tourController.getDistances);
+
 // ! All the routes restriced authorization to admin and lead-guide after this
 tourRouter.use(restrictTo("admin", "lead-guide"));
 
