@@ -2,16 +2,16 @@
 
 It's the full stack server side rendered application based on ExpressJS, MongoDB, Pug templates. JWT based authentication is implemented to protect the api's.
 
-To check api's endpoints, use the below postman link:
+## To check api's endpoints, use the below postman link:
 
 https://documenter.getpostman.com/view/4087771/Tz5jdzYg
 
-To go live with running website, use the below url:
+## To go live with running website, use the below url:
 
 https://holiday-adventure.herokuapp.com/
 
 
-To run this application on local host:
+## To run this application on local host:
 
 1:  Download the repo.
 
@@ -20,7 +20,7 @@ To run this application on local host:
 3:  Finally run, npm start to run application on localhost:5000
 
 
-Packages includes in this application are :
+## Packages includes in this application are :
 
     "@babel/polyfill": "^7.12.1"
    
