@@ -9,6 +9,7 @@ https://documenter.getpostman.com/view/4087771/Tz5jdzYg
 ## To go live with running website, use the below url:
 
 https://holiday-adventure.herokuapp.com/
+(Note: It deployed on heroku free tier, so first time it will take sometime to upload.. please be patience)
 
 
 ## To run this application on local host:
